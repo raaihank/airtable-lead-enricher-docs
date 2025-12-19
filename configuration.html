@@ -289,11 +289,23 @@
                     <tr><td><code>email</code></td><td>Contact email</td></tr>
                     <tr><td><code>phone</code></td><td>Phone number</td></tr>
                     <tr><td><code>address</code></td><td>Business address</td></tr>
+                    <tr><td><code>category</code></td><td>Business type (Google Maps)</td></tr>
                     <tr><td><code>rating</code></td><td>Google rating (0-5)</td></tr>
                     <tr><td><code>reviewCount</code></td><td>Number of reviews</td></tr>
+                    <tr><td><code>description</code></td><td>Company description</td></tr>
+                    <tr><td><code>techStack</code></td><td>Technologies used</td></tr>
+                    <tr><td><code>industry</code></td><td>Tech-specific industry</td></tr>
+                    <tr><td><code>foundingYear</code></td><td>Company founding year</td></tr>
+                    <tr><td><code>employeeCount</code></td><td>Employee count/range</td></tr>
+                    <tr><td><code>companyStage</code></td><td>Company maturity stage</td></tr>
                     <tr><td><code>linkedinUrl</code></td><td>LinkedIn URL (Hunter)</td></tr>
                     <tr><td><code>leadScore</code></td><td>AI score 0-100</td></tr>
                     <tr><td><code>icpScore</code></td><td>ICP match 0-40</td></tr>
+                    <tr><td><code>summary</code></td><td>AI company summary</td></tr>
+                    <tr><td><code>targetCustomers</code></td><td>Who they serve (AI with ICP)</td></tr>
+                    <tr><td><code>valueProposition</code></td><td>Core value (AI with ICP)</td></tr>
+                    <tr><td><code>keyProducts</code></td><td>Key offerings (AI with ICP)</td></tr>
+                    <tr><td><code>outreachAngles</code></td><td>Sales talking points (AI with ICP)</td></tr>
                 </tbody>
             </table>
 
@@ -338,12 +350,12 @@
                 <tbody>
                     <tr>
                         <td><code>google_maps</code></td>
-                        <td>phone, address, rating</td>
+                        <td>phone, address, rating, category</td>
                         <td>❌ No</td>
                     </tr>
                     <tr>
                         <td><code>website</code></td>
-                        <td>email, description, techStack</td>
+                        <td>email, description, techStack, industry, foundingYear, employeeCount, companyStage</td>
                         <td>❌ No</td>
                     </tr>
                     <tr>
@@ -437,6 +449,7 @@
             <pre><code class="language-json">{
   "icpCriteria": "B2B SaaS companies, 50-500 employees, uses React/Angular, US-based"
 }</code></pre>
+            <p><strong>💡 Bonus:</strong> When ICP criteria is provided, the AI generates personalized <code>outreachAngles</code> - 3-4 sales talking points tailored to each lead's characteristics and your ICP requirements.</p>
 
             <h3>scoring.weights</h3>
             <p>Custom scoring weights (must sum to 100).</p>
