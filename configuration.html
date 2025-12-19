@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Guide - Airtable Lead Enricher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        nav {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav a {
+            color: #667eea;
+            text-decoration: none;
+            margin-right: 2rem;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: #764ba2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h4 {
+            color: #555;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #282c34;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        pre code {
+            background: transparent;
+            padding: 0;
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .badge-required {
+            background: #f56565;
+        }
+
+        .badge-optional {
+            background: #4299e1;
+        }
+
+        ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        .warning {
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .info {
+            background: #ebf8ff;
+            border-left: 4px solid #4299e1;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Configuration Guide</h1>
+        <p>Complete reference for all configuration options</p>
+    </header>
+
+    <nav>
+        <div class="container">
+            <a href="index.html">← Home</a>
+            <a href="#airtable">Airtable</a>
+            <a href="#enrichment">Enrichment</a>
+            <a href="#llm">LLM</a>
+            <a href="#scoring">Scoring</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="section" id="airtable">
+            <h2>Airtable Configuration</h2>
+
+            <h3>airtable.apiKey <span class="badge badge-required">REQUIRED</span></h3>
+            <p>Personal Access Token for Airtable authentication.</p>
+            <p><strong>Format:</strong> Starts with <code>pat</code> (e.g., <code>patKeHwfnyPGvDBqR.256fce...</code>)</p>
+            <p><strong>Get it:</strong> <a href="https://airtable.com/create/tokens">airtable.com/create/tokens</a></p>
+            <p><strong>Scopes needed:</strong> <code>data.records:read</code>, <code>data.records:write</code></p>
+
+            <h3>airtable.baseId <span class="badge badge-required">REQUIRED</span></h3>
+            <p>Your Airtable base identifier.</p>
+            <p><strong>Format:</strong> Starts with <code>app</code> (e.g., <code>appPrgvMR47ajmY5w</code>)</p>
+            <p><strong>Get it:</strong> From URL <code>https://airtable.com/appXXXXXX/...</code></p>
+
+            <h3>airtable.tableId <span class="badge badge-required">REQUIRED</span></h3>
+            <p>Table identifier within the base.</p>
+            <p><strong>Format:</strong> Starts with <code>tbl</code> (e.g., <code>tblez6ty6e5hJCfoe</code>)</p>
+            <p><strong>Get it:</strong> Click <code>...</code> on table → "Copy table ID"</p>
+
+            <h3>airtable.viewId <span class="badge badge-optional">OPTIONAL</span></h3>
+            <p>Filter to specific view.</p>
+            <p><strong>Format:</strong> Starts with <code>viw</code></p>
+
+            <h3>airtable.filterFormula <span class="badge badge-optional">OPTIONAL</span></h3>
+            <p>Airtable formula to filter records.</p>
+            <p><strong>Examples:</strong></p>
+            <pre><code class="language-javascript">// Only unenriched records
+"NOT({enrichedAt})"
+
+// Specific status
+"AND(NOT({enrichedAt}), {Status} = 'New')"
+
+// High-value leads
+"AND(NOT({enrichedAt}), {Annual Revenue} > 1000000)"</code></pre>
+
+            <h3>airtable.maxRecords <span class="badge badge-optional">OPTIONAL</span></h3>
+            <p>Max records per run. Range: 1-100. Default: 100.</p>
+
+            <h3>airtable.inputFields <span class="badge badge-required">REQUIRED</span></h3>
+            <p>Maps internal field names to your Airtable columns.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Internal</th>
+                        <th>Your Column</th>
+                        <th>Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>companyName</code></td>
+                        <td>Your company name field</td>
+                        <td>✅ Yes</td>
+                    </tr>
+                    <tr>
+                        <td><code>website</code></td>
+                        <td>Your website field</td>
+                        <td>✅ Yes</td>
+                    </tr>
+                    <tr>
+                        <td><code>location</code></td>
+                        <td>Your location field</td>
+                        <td>❌ No</td>
+                    </tr>
+                </tbody>
+            </table>
+            <pre><code class="language-json">{
+  "inputFields": {
+    "companyName": "Company Name",
+    "website": "Website",
+    "location": "HQ City"
+  }
+}</code></pre>
+            <div class="warning">
+                <strong>⚠️ CASE-SENSITIVE:</strong> <code>"Email"</code> ≠ <code>"email"</code>
+            </div>
+
+            <h3>airtable.outputFields <span class="badge badge-optional">OPTIONAL</span></h3>
+            <p>Maps internal output fields to your Airtable columns.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Internal</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>email</code></td><td>Contact email</td></tr>
+                    <tr><td><code>phone</code></td><td>Phone number</td></tr>
+                    <tr><td><code>address</code></td><td>Business address</td></tr>
+                    <tr><td><code>rating</code></td><td>Google rating (0-5)</td></tr>
+                    <tr><td><code>reviewCount</code></td><td>Number of reviews</td></tr>
+                    <tr><td><code>linkedinUrl</code></td><td>LinkedIn URL (Hunter)</td></tr>
+                    <tr><td><code>leadScore</code></td><td>AI score 0-100</td></tr>
+                    <tr><td><code>icpScore</code></td><td>ICP match 0-40</td></tr>
+                </tbody>
+            </table>
+
+            <h3>airtable.updateMode <span class="badge badge-optional">OPTIONAL</span></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mode</th>
+                        <th>Behavior</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>append</code></td>
+                        <td>Only fill empty fields (default)</td>
+                    </tr>
+                    <tr>
+                        <td><code>overwrite</code></td>
+                        <td>Replace all fields</td>
+                    </tr>
+                    <tr>
+                        <td><code>skip</code></td>
+                        <td>Skip if any field has data</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section" id="enrichment">
+            <h2>Enrichment Configuration</h2>
+
+            <h3>enrichment.sources</h3>
+            <p>Array of sources to use.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Source</th>
+                        <th>Data</th>
+                        <th>API Key</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>google_maps</code></td>
+                        <td>phone, address, rating</td>
+                        <td>❌ No</td>
+                    </tr>
+                    <tr>
+                        <td><code>website</code></td>
+                        <td>email, description, techStack</td>
+                        <td>❌ No</td>
+                    </tr>
+                    <tr>
+                        <td><code>hunter</code></td>
+                        <td>email (verified), social profiles</td>
+                        <td>✅ Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Default:</strong> <code>["google_maps", "website"]</code></p>
+
+            <h3>enrichment.concurrency</h3>
+            <p>Parallel records. Range: 1-20. Default: 10.</p>
+
+            <h3>enrichment.timeout</h3>
+            <p>Seconds per enricher. Default: 60.</p>
+
+            <h3>enrichment.hunter</h3>
+            <p>Hunter.io configuration (BYOK).</p>
+            <pre><code class="language-json">{
+  "hunter": {
+    "enabled": true,
+    "apiKey": "YOUR_HUNTER_KEY"
+  }
+}</code></pre>
+            <div class="info">
+                <strong>💰 Pricing:</strong> Free (25/mo), $49/mo (1K), $99/mo (5K)
+            </div>
+        </div>
+
+        <div class="section" id="llm">
+            <h2>LLM Configuration</h2>
+
+            <h3>llm.enabled</h3>
+            <p>Enable AI features. Default: true.</p>
+
+            <h3>llm.provider</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Provider</th>
+                        <th>Default Model</th>
+                        <th>Cost/Lead</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>openai</code></td>
+                        <td>gpt-4o-mini</td>
+                        <td>~$0.001</td>
+                    </tr>
+                    <tr>
+                        <td><code>anthropic</code></td>
+                        <td>claude-3-5-haiku</td>
+                        <td>~$0.001</td>
+                    </tr>
+                    <tr>
+                        <td><code>bedrock</code></td>
+                        <td>claude-3-5-haiku</td>
+                        <td>~$0.0004</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>llm.apiKey <span class="badge badge-required">REQUIRED</span></h3>
+            <p>Your LLM API key.</p>
+            <ul>
+                <li>OpenAI: Starts with <code>sk-proj-</code> or <code>sk-</code></li>
+                <li>Anthropic: Starts with <code>sk-ant-</code></li>
+                <li>Bedrock: Uses AWS credentials</li>
+            </ul>
+
+            <h3>llm.model <span class="badge badge-optional">OPTIONAL</span></h3>
+            <p>Override default model.</p>
+
+            <h3>llm.maxTokens</h3>
+            <p>Max response tokens. Default: 1000.</p>
+
+            <h3>llm.temperature</h3>
+            <p>Creativity 0-1. Default: 0.3 (factual).</p>
+        </div>
+
+        <div class="section" id="scoring">
+            <h2>Scoring Configuration</h2>
+
+            <h3>scoring.enabled</h3>
+            <p>Enable lead scoring. Default: true.</p>
+
+            <h3>scoring.icpCriteria</h3>
+            <p>Your Ideal Customer Profile description.</p>
+            <pre><code class="language-json">{
+  "icpCriteria": "B2B SaaS companies, 50-500 employees, uses React/Angular, US-based"
+}</code></pre>
+
+            <h3>scoring.weights</h3>
+            <p>Custom scoring weights (must sum to 100).</p>
+            <pre><code class="language-json">{
+  "weights": {
+    "hasEmail": 20,
+    "hasPhone": 15,
+    "socialPresence": 15,
+    "reviewScore": 10,
+    "icpMatch": 40
+  }
+}</code></pre>
+
+            <h3>scoring.minimumConfidence</h3>
+            <p>Min data quality for scoring. Range: 0-1. Default: 0.3.</p>
+        </div>
+
+        <div class="section">
+            <h2>Processing Modes</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mode</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>batch</code></td>
+                        <td>Process from Airtable view/filter</td>
+                    </tr>
+                    <tr>
+                        <td><code>single</code></td>
+                        <td>Process specific recordIds</td>
+                    </tr>
+                    <tr>
+                        <td><code>api</code></td>
+                        <td>No Airtable, JSON input</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p><a href="index.html">← Back to Home</a> · <a href="integrations.html">API Integrations →</a></p>
+    </footer>
+</body>
+</html>
