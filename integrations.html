@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Integrations - Airtable Lead Enricher</title>
+    <link rel="icon" type="image/png" href="https://images.apifyusercontent.com/hIWSIagcj8949hoLcWRj_q-7YXhT9xpVuYWR4RP93uU/rs:fill:250:250/cb:1/aHR0cHM6Ly9hcGlmeS1pbWFnZS11cGxvYWRzLXByb2QuczMudXMtZWFzdC0xLmFtYXpvbmF3cy5jb20vOHp1MThIQW4xN1Q4NXpGeFUtYWN0b3ItY1ZEcEF0dHBoY3BETTR2RngtMnpveEVnMEhlRi1haXJ0YWJsZS1sZWFkLWVucmljaGVyLXRyYW5zcGFyZW50LnBuZw.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
@@ -154,6 +155,11 @@
             <a href="#nodejs">Node.js</a>
             <a href="#lambda">Lambda</a>
             <a href="#airflow">Airflow</a>
+            <a href="#glue">AWS Glue</a>
+            <a href="#gcp">GCP</a>
+            <a href="#step-functions">Step Functions</a>
+            <a href="#snowflake">Snowflake</a>
+            <a href="#redshift">Redshift</a>
         </div>
     </nav>
 
@@ -438,6 +444,357 @@ with DAG(
     )
 
     extract >> enrich >> load</code></pre>
+        </div>
+
+        <div class="section" id="glue">
+            <h2>AWS Glue Integration</h2>
+            <pre><code class="language-python">import sys
+from awsglue.transforms import *
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+import requests
+import json
+
+args = getResolvedOptions(sys.argv, ['JOB_NAME', 'APIFY_TOKEN'])
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+# Read leads from S3
+datasource = glueContext.create_dynamic_frame.from_catalog(
+    database="leads_db",
+    table_name="raw_leads"
+)
+
+# Convert to list of companies
+companies = []
+for record in datasource.toDF().collect():
+    companies.append({
+        "companyName": record.company_name,
+        "website": record.website
+    })
+
+# Enrich in batches (max 100 per run)
+enriched_results = []
+for i in range(0, len(companies), 100):
+    batch = companies[i:i+100]
+
+    response = requests.post(
+        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+        params={"token": args['APIFY_TOKEN']},
+        json={
+            "mode": "api",
+            "companies": batch,
+            "enrichment": {"sources": ["google_maps", "website"]}
+        },
+        timeout=300
+    )
+    enriched_results.extend(response.json())
+
+# Write enriched data back to S3
+df = spark.createDataFrame(enriched_results)
+glueContext.write_dynamic_frame.from_options(
+    frame=DynamicFrame.fromDF(df, glueContext, "enriched"),
+    connection_type="s3",
+    connection_options={"path": "s3://my-bucket/enriched-leads/"},
+    format="parquet"
+)
+
+job.commit()</code></pre>
+            <div class="info">
+                <strong>💡 Tip:</strong> Use Glue job parameters to securely pass APIFY_TOKEN instead of hardcoding.
+            </div>
+        </div>
+
+        <div class="section" id="gcp">
+            <h2>Google Cloud Functions</h2>
+            <pre><code class="language-python">import functions_framework
+from google.cloud import storage
+import requests
+import json
+import os
+
+@functions_framework.http
+def enrich_leads(request):
+    """HTTP Cloud Function to enrich leads from Cloud Storage."""
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket('my-leads-bucket')
+
+    # Read pending leads
+    blob = bucket.blob('leads/pending.json')
+    companies = json.loads(blob.download_as_text())
+
+    # Enrich via Apify
+    enriched = []
+    for i in range(0, len(companies), 100):
+        batch = companies[i:i+100]
+
+        response = requests.post(
+            "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+            params={"token": os.environ['APIFY_TOKEN']},
+            json={
+                "mode": "api",
+                "companies": batch,
+                "enrichment": {"sources": ["google_maps", "website"]},
+                "llm": {
+                    "enabled": True,
+                    "provider": "openai",
+                    "apiKey": os.environ['OPENAI_API_KEY']
+                }
+            },
+            timeout=300
+        )
+        enriched.extend(response.json())
+
+    # Write enriched data
+    output_blob = bucket.blob('leads/enriched.json')
+    output_blob.upload_from_string(
+        json.dumps(enriched, indent=2),
+        content_type='application/json'
+    )
+
+    return {
+        "success": True,
+        "enriched": len(enriched),
+        "output": "gs://my-leads-bucket/leads/enriched.json"
+    }</code></pre>
+
+            <h3>Deploy</h3>
+            <pre><code class="language-bash">gcloud functions deploy enrich-leads \
+  --runtime python39 \
+  --trigger-http \
+  --allow-unauthenticated \
+  --set-env-vars APIFY_TOKEN=your_token,OPENAI_API_KEY=your_key \
+  --timeout 540s \
+  --memory 512MB</code></pre>
+        </div>
+
+        <div class="section" id="step-functions">
+            <h2>AWS Step Functions (Durable Lambda)</h2>
+            <p>For long-running enrichment jobs that exceed Lambda's 15-minute limit:</p>
+
+            <h3>Step Functions State Machine</h3>
+            <pre><code class="language-json">{
+  "Comment": "Lead Enrichment Pipeline",
+  "StartAt": "ReadLeads",
+  "States": {
+    "ReadLeads": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:read-leads-from-s3",
+      "Next": "EnrichLeads"
+    },
+    "EnrichLeads": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:enrich-via-apify",
+      "Retry": [
+        {
+          "ErrorEquals": ["States.TaskFailed"],
+          "IntervalSeconds": 30,
+          "MaxAttempts": 3,
+          "BackoffRate": 2.0
+        }
+      ],
+      "Next": "WriteResults"
+    },
+    "WriteResults": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:write-to-s3",
+      "End": true
+    }
+  }
+}</code></pre>
+
+            <h3>Enrich Lambda Function</h3>
+            <pre><code class="language-python">import boto3
+import requests
+import os
+
+def lambda_handler(event, context):
+    """Long-running enrichment via Step Functions."""
+    companies = event['companies']
+
+    # Start async Apify run
+    run = requests.post(
+        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/runs",
+        params={"token": os.environ['APIFY_TOKEN']},
+        json={
+            "mode": "api",
+            "companies": companies,
+            "enrichment": {"sources": ["google_maps", "website", "hunter"]},
+            "llm": {"enabled": True, "provider": "openai", "apiKey": os.environ['OPENAI_KEY']}
+        }
+    ).json()
+
+    run_id = run['data']['id']
+
+    # Poll for completion (Step Functions handles timeout)
+    while True:
+        status = requests.get(
+            f"https://api.apify.com/v2/actor-runs/{run_id}",
+            params={"token": os.environ['APIFY_TOKEN']}
+        ).json()
+
+        if status['data']['status'] in ['SUCCEEDED', 'FAILED']:
+            break
+
+    # Get results
+    dataset_id = status['data']['defaultDatasetId']
+    results = requests.get(
+        f"https://api.apify.com/v2/datasets/{dataset_id}/items",
+        params={"token": os.environ['APIFY_TOKEN']}
+    ).json()
+
+    return {"enrichedLeads": results, "count": len(results)}</code></pre>
+        </div>
+
+        <div class="section" id="snowflake">
+            <h2>Snowflake Integration</h2>
+            <p>Enrich leads directly from Snowflake tables using Python stored procedures:</p>
+
+            <pre><code class="language-sql">-- Create stored procedure
+CREATE OR REPLACE PROCEDURE enrich_leads()
+RETURNS STRING
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.8'
+PACKAGES = ('snowflake-snowpark-python', 'requests')
+HANDLER = 'enrich_leads_handler'
+AS
+$$
+import requests
+import json
+
+def enrich_leads_handler(session):
+    # Read pending leads from table
+    leads_df = session.table("RAW_LEADS").filter("ENRICHED_AT IS NULL").limit(100)
+    companies = []
+
+    for row in leads_df.collect():
+        companies.append({
+            "companyName": row.COMPANY_NAME,
+            "website": row.WEBSITE
+        })
+
+    # Enrich via Apify
+    response = requests.post(
+        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+        params={"token": "YOUR_APIFY_TOKEN"},
+        json={
+            "mode": "api",
+            "companies": companies,
+            "enrichment": {"sources": ["google_maps", "website"]}
+        },
+        timeout=300
+    )
+
+    enriched = response.json()
+
+    # Insert enriched data
+    for lead in enriched:
+        session.sql(f"""
+            UPDATE RAW_LEADS
+            SET EMAIL = '{lead.get('email', '')}',
+                PHONE = '{lead.get('phone', '')}',
+                RATING = {lead.get('rating', 0)},
+                LEAD_SCORE = {lead.get('leadScore', 0)},
+                ENRICHED_AT = CURRENT_TIMESTAMP()
+            WHERE COMPANY_NAME = '{lead['companyName']}'
+        """).collect()
+
+    return f"Enriched {len(enriched)} leads"
+$$;
+
+-- Schedule with task
+CREATE OR REPLACE TASK enrich_leads_daily
+  WAREHOUSE = COMPUTE_WH
+  SCHEDULE = 'USING CRON 0 2 * * * UTC'
+AS
+  CALL enrich_leads();
+
+ALTER TASK enrich_leads_daily RESUME;</code></pre>
+        </div>
+
+        <div class="section" id="redshift">
+            <h2>Amazon Redshift Integration</h2>
+            <p>Enrich leads from Redshift using Lambda + S3 unload:</p>
+
+            <h3>Step 1: Unload to S3</h3>
+            <pre><code class="language-sql">-- Unload pending leads to S3
+UNLOAD (
+  'SELECT company_name, website
+   FROM leads
+   WHERE enriched_at IS NULL
+   LIMIT 1000'
+)
+TO 's3://my-bucket/leads/pending_'
+IAM_ROLE 'arn:aws:iam::123456789012:role/RedshiftS3Role'
+FORMAT AS JSON
+PARALLEL OFF;</code></pre>
+
+            <h3>Step 2: Lambda Enrichment</h3>
+            <pre><code class="language-python">import boto3
+import requests
+import json
+import psycopg2
+
+def lambda_handler(event, context):
+    s3 = boto3.client('s3')
+
+    # Read from S3
+    obj = s3.get_object(Bucket='my-bucket', Key='leads/pending_0000')
+    companies = [json.loads(line) for line in obj['Body'].read().decode().splitlines()]
+
+    # Enrich
+    response = requests.post(
+        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+        params={"token": os.environ['APIFY_TOKEN']},
+        json={"mode": "api", "companies": companies},
+        timeout=300
+    )
+    enriched = response.json()
+
+    # Write back to S3
+    s3.put_object(
+        Bucket='my-bucket',
+        Key='leads/enriched.json',
+        Body=json.dumps(enriched)
+    )
+
+    # Copy to Redshift
+    conn = psycopg2.connect(
+        host=os.environ['REDSHIFT_HOST'],
+        port=5439,
+        dbname='analytics',
+        user=os.environ['REDSHIFT_USER'],
+        password=os.environ['REDSHIFT_PASSWORD']
+    )
+
+    with conn.cursor() as cur:
+        cur.execute(f"""
+            COPY enriched_leads
+            FROM 's3://my-bucket/leads/enriched.json'
+            IAM_ROLE 'arn:aws:iam::123456789012:role/RedshiftS3Role'
+            FORMAT AS JSON 'auto';
+        """)
+        conn.commit()
+
+    return {"enriched": len(enriched)}</code></pre>
+
+            <h3>Data Lake Pattern (S3)</h3>
+            <pre><code class="language-python"># Write enriched data to partitioned data lake
+from datetime import datetime
+
+partition_path = f"s3://datalake/enriched-leads/year={datetime.now().year}/month={datetime.now().month:02d}/"
+
+s3.put_object(
+    Bucket='datalake',
+    Key=f"{partition_path}leads_{datetime.now().strftime('%Y%m%d_%H%M%S')}.parquet",
+    Body=df.to_parquet()
+)</code></pre>
         </div>
 
         <div class="section">
