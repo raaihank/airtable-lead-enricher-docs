@@ -357,7 +357,7 @@ APIFY_TOKEN = "your_token"
 
 # Start run
 run = requests.post(
-    "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/runs",
+    "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/runs",
     params={"token": APIFY_TOKEN},
     json={
         "mode": "api",
@@ -403,7 +403,7 @@ print(results)</code></pre>
 
                 <h3>Synchronous (Wait for Results)</h3>
                 <pre><code class="language-python">response = requests.post(
-    "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+    "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items",
     params={"token": APIFY_TOKEN},
     json={"mode": "api", "companies": [...]},
     timeout=300
@@ -417,7 +417,7 @@ results = response.json()</code></pre>
 const client = new ApifyClient({ token: 'your_token' });
 
 async function enrichLeads(companies) {
-    const run = await client.actor('raihank/airtable-lead-enricher').call({
+    const run = await client.actor('datahq/airtable-lead-enricher').call({
         mode: 'api',
         companies: companies,
         enrichment: {
@@ -522,7 +522,7 @@ def lambda_handler(event, context):
 
     for batch in batches:
         run = requests.post(
-            "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+            "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items",
             params={"token": APIFY_TOKEN},
             json={
                 "mode": "api",
@@ -560,7 +560,7 @@ def enrich_leads(**context):
     leads = ti.xcom_pull(task_ids='extract_leads')
 
     response = requests.post(
-        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+        "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items",
         params={"token": Variable.get("APIFY_TOKEN")},
         json={
             "mode": "api",
@@ -641,7 +641,7 @@ for i in range(0, len(companies), 100):
     batch = companies[i:i+100]
 
     response = requests.post(
-        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+        "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items",
         params={"token": args['APIFY_TOKEN']},
         json={
             "mode": "api",
@@ -693,7 +693,7 @@ def enrich_leads(request):
         batch = companies[i:i+100]
 
         response = requests.post(
-            "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+            "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items",
             params={"token": os.environ['APIFY_TOKEN']},
             json={
                 "mode": "api",
@@ -776,7 +776,7 @@ def lambda_handler(event, context):
 
     # Start async Apify run
     run = requests.post(
-        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/runs",
+        "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/runs",
         params={"token": os.environ['APIFY_TOKEN']},
         json={
             "mode": "api",
@@ -835,7 +835,7 @@ def enrich_leads_handler(session):
 
     # Enrich via Apify
     response = requests.post(
-        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+        "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items",
         params={"token": "YOUR_APIFY_TOKEN"},
         json={
             "mode": "api",
@@ -902,7 +902,7 @@ def lambda_handler(event, context):
 
     # Enrich
     response = requests.post(
-        "https://api.apify.com/v2/acts/raihank~airtable-lead-enricher/run-sync-get-dataset-items",
+        "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items",
         params={"token": os.environ['APIFY_TOKEN']},
         json={"mode": "api", "companies": companies},
         timeout=300
