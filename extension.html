@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Extension Guide - Airtable Lead Enricher</title>
+    <link rel="icon" type="image/png" href="https://images.apifyusercontent.com/hIWSIagcj8949hoLcWRj_q-7YXhT9xpVuYWR4RP93uU/rs:fill:250:250/cb:1/aHR0cHM6Ly9hcGlmeS1pbWFnZS11cGxvYWRzLXByb2QuczMudXMtZWFzdC0xLmFtYXpvbmF3cy5jb20vOHp1MThIQW4xN1Q4NXpGeFUtYWN0b3ItY1ZEcEF0dHBoY3BETTR2RngtMnpveEVnMEhlRi1haXJ0YWJsZS1sZWFkLWVucmljaGVyLXRyYW5zcGFyZW50LnBuZw.webp">
     <style>
         * {
             margin: 0;
@@ -11,22 +12,110 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
+            background: #f5f5f5;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
+        .doc-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar TOC */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .sidebar-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .sidebar-header h2 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header .version {
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .toc {
+            list-style: none;
+        }
+
+        .toc li {
+            margin-bottom: 5px;
+        }
+
+        .toc a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.95em;
+            transition: all 0.2s;
+        }
+
+        .toc a:hover {
+            background: #f0f0f0;
+            color: #667eea;
+        }
+
+        .toc a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .toc .toc-subsection {
+            list-style: none;
+            margin-left: 15px;
+            margin-top: 5px;
+        }
+
+        .toc .toc-subsection a {
+            font-size: 0.85em;
+            padding: 6px 10px;
+        }
+
+        .back-link {
+            display: block;
+            margin-bottom: 15px;
+            color: #667eea;
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px 60px;
+            max-width: 1200px;
+        }
+
+        .content-wrapper {
             background: white;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         h1 {
@@ -35,25 +124,34 @@
             font-size: 2.5em;
         }
 
-        .version {
+        .version-tag {
             color: #666;
             font-size: 0.9em;
             margin-bottom: 30px;
+            display: inline-block;
+            padding: 5px 15px;
+            background: #f0f0f0;
+            border-radius: 20px;
         }
 
         h2 {
             color: #764ba2;
-            margin-top: 40px;
-            margin-bottom: 15px;
+            margin-top: 50px;
+            margin-bottom: 20px;
             font-size: 1.8em;
             border-bottom: 2px solid #f0f0f0;
             padding-bottom: 10px;
+            padding-top: 20px;
+        }
+
+        h2:first-of-type {
+            margin-top: 30px;
         }
 
         h3 {
             color: #667eea;
-            margin-top: 25px;
-            margin-bottom: 10px;
+            margin-top: 30px;
+            margin-bottom: 15px;
             font-size: 1.3em;
         }
 
@@ -62,7 +160,7 @@
             line-height: 1.8;
         }
 
-        ul {
+        ul, ol {
             margin-bottom: 15px;
             margin-left: 25px;
         }
@@ -79,13 +177,6 @@
 
         a:hover {
             text-decoration: underline;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #667eea;
-            font-weight: 500;
         }
 
         strong {
@@ -200,500 +291,568 @@
         .comparison-table tr:hover {
             background: #f9f9f9;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .content-wrapper {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="index.html" class="back-link">← Back to Documentation</a>
+    <div class="doc-layout">
+        <!-- Left Sidebar TOC -->
+        <aside class="sidebar">
+            <a href="index.html" class="back-link">← Documentation</a>
 
-        <h1>📱 Airtable Extension Guide</h1>
-        <p class="version">Version 1.2.0 | Updated: December 2024</p>
-
-        <p><strong>The Airtable Lead Enricher Extension</strong> allows you to enrich leads directly from your Airtable base without leaving the interface. Process up to 1,000 records per batch with real-time progress tracking.</p>
-
-        <div class="info-box">
-            <strong>📌 New in v1.2.0:</strong> Modular architecture, smart field mapping with fuzzy matching, increased batch size to 1,000 records, improved security features, and comprehensive documentation.
-        </div>
-
-        <!-- Features Overview -->
-        <h2>✨ Key Features</h2>
-
-        <div class="feature-grid">
-            <div class="feature-card">
-                <h4>⚡ Batch Processing</h4>
-                <p>Enrich up to 1,000 leads at once with progress tracking</p>
+            <div class="sidebar-header">
+                <h2>📱 Extension Guide</h2>
+                <span class="version">Version 1.2.0</span>
             </div>
-            <div class="feature-card">
-                <h4>🎯 Smart Mapping</h4>
-                <p>Auto-fill field mappings with fuzzy matching algorithm</p>
+
+            <nav>
+                <ul class="toc">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#features">Key Features</a></li>
+                    <li>
+                        <a href="#installation">Installation</a>
+                        <ul class="toc-subsection">
+                            <li><a href="#install-deps">Install Dependencies</a></li>
+                            <li><a href="#start-server">Start Server</a></li>
+                            <li><a href="#select-base">Select Base</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#quick-start">Quick Start Guide</a>
+                        <ul class="toc-subsection">
+                            <li><a href="#welcome">Welcome Screen</a></li>
+                            <li><a href="#step1">Step 1: API Keys</a></li>
+                            <li><a href="#step2">Step 2: Field Mapping</a></li>
+                            <li><a href="#step3">Step 3: Select & Enrich</a></li>
+                            <li><a href="#progress">Tracking Progress</a></li>
+                            <li><a href="#completion">Completion</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#field-reference">Field Reference</a></li>
+                    <li><a href="#troubleshooting">Troubleshooting</a></li>
+                    <li><a href="#best-practices">Best Practices</a></li>
+                    <li><a href="#version-history">Version History</a></li>
+                    <li><a href="#support">Support & Resources</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <h1 id="overview">📱 Airtable Extension Guide</h1>
+                <span class="version-tag">Version 1.2.0 | Updated: December 2024</span>
+
+                <p><strong>The Airtable Lead Enricher Extension</strong> allows you to enrich leads directly from your Airtable base without leaving the interface. Process up to 1,000 records per batch with real-time progress tracking.</p>
+
+                <div class="info-box">
+                    <strong>📌 New in v1.2.0:</strong> Modular architecture, smart field mapping with fuzzy matching, increased batch size to 1,000 records, improved security features, and comprehensive documentation.
+                </div>
+
+                <!-- Features Overview -->
+                <h2 id="features">✨ Key Features</h2>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>⚡ Batch Processing</h4>
+                        <p>Enrich up to 1,000 leads at once with progress tracking</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎯 Smart Mapping</h4>
+                        <p>Auto-fill field mappings with fuzzy matching algorithm</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔒 Secure</h4>
+                        <p>Keys stored locally in browser, show/hide toggle, clear all option</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 Real-time Tracking</h4>
+                        <p>Live progress updates with status and completion percentage</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔍 Flexible Filtering</h4>
+                        <p>Filter by enrichment status, selected records, or custom views</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🤖 AI-Powered</h4>
+                        <p>Optional OpenAI integration for lead scoring and insights</p>
+                    </div>
+                </div>
+
+                <!-- Installation -->
+                <h2 id="installation">🚀 Installation</h2>
+
+                <h3 id="install-deps"><span class="step-number">1</span> Install Dependencies</h3>
+                <p>Navigate to the extension directory and install:</p>
+                <code>cd airtable-extension && npm install</code>
+
+                <h3 id="start-server"><span class="step-number">2</span> Start Development Server</h3>
+                <code>npm start</code>
+                <p>This will open your browser and prompt you to select an Airtable base.</p>
+
+                <h3 id="select-base"><span class="step-number">3</span> Select Your Base</h3>
+                <p>Choose the base where you want to install the extension. The extension will appear in the right sidebar.</p>
+
+                <div class="screenshot-placeholder">
+                    Screenshot: Installation Flow
+                    <br><small>(Add screenshot: screenshots/00-installation.png)</small>
+                </div>
+
+                <!-- Quick Start Guide -->
+                <h2 id="quick-start">📖 Quick Start Guide</h2>
+
+                <h3 id="welcome">Welcome Screen</h3>
+                <p>When you first open the extension, you'll see a welcome screen with an overview of features:</p>
+
+                <div class="screenshot-placeholder">
+                    Welcome Screen
+                    <br><small>(Add screenshot: screenshots/01-welcome-screen.png)</small>
+                </div>
+
+                <ul>
+                    <li>✅ Email, phone, address from website & Google Maps</li>
+                    <li>✅ Company insights: industry, employee count, tech stack</li>
+                    <li>✅ AI-powered lead scoring (0-100)</li>
+                    <li>✅ Personalized outreach angles for each lead</li>
+                    <li>✅ Social media profiles (LinkedIn, Facebook, Twitter)</li>
+                </ul>
+
+                <p>Click <strong>"Get Started - Configure API Keys"</strong> to begin.</p>
+
+                <!-- Step 1: API Keys -->
+                <h3 id="step1"><span class="step-number">1</span> Configure API Keys</h3>
+
+                <img
+                    src="screenshots/extension/api-key.png"
+                    alt="Step 1: API Keys Configuration with security features and API key inputs"
+                    class="screenshot"
+                >
+
+                <p><strong>Required:</strong></p>
+                <ul>
+                    <li><strong>Apify API Token:</strong> Get from <a href="https://console.apify.com/account/integrations" target="_blank">console.apify.com</a></li>
+                </ul>
+
+                <p><strong>Optional (for enhanced features):</strong></p>
+                <ul>
+                    <li><strong>OpenAI API Key:</strong> For AI-powered lead scoring and insights</li>
+                    <li><strong>ICP Criteria:</strong> Your ideal customer profile (e.g., "B2B SaaS, 50-500 employees")</li>
+                    <li><strong>Hunter.io API Key:</strong> For LinkedIn, Facebook, Twitter profile discovery</li>
+                </ul>
+
+                <div class="success-box">
+                    <strong>✅ No Airtable PAT Required!</strong> The extension uses API mode and has direct access to your Airtable data.
+                </div>
+
+                <p><strong>Security Features:</strong></p>
+                <ul>
+                    <li>🔒 Keys stored locally in your browser only</li>
+                    <li>👁️ Show/Hide toggle for sensitive data</li>
+                    <li>🗑️ Clear All button to reset settings</li>
+                </ul>
+
+                <p>Click <strong>"Continue"</strong> when done.</p>
+
+                <!-- Step 2: Field Mapping -->
+                <h3 id="step2"><span class="step-number">2</span> Map Your Fields</h3>
+
+                <img
+                    src="screenshots/extension/field-mapping.png"
+                    alt="Step 2: Field Mapping with smart auto-fill and interactive field selection"
+                    class="screenshot"
+                >
+
+                <p><strong>Input Fields</strong> (your Airtable data):</p>
+                <ul>
+                    <li><strong>Company Name Field:</strong> Which field contains company names</li>
+                    <li><strong>Website Field:</strong> Which field contains websites</li>
+                    <li><strong>Location Field:</strong> (Optional) Which field contains location data</li>
+                </ul>
+
+                <p><strong>Output Fields</strong> (where to write enriched data):</p>
+                <ul>
+                    <li>Click <strong>"Auto-fill"</strong> to automatically match fields using fuzzy matching</li>
+                    <li>Or manually select <strong>"+ Add field mapping..."</strong> to map each field</li>
+                    <li>Remove unwanted mappings with the <strong>X</strong> button</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>💡 Smart Auto-Fill:</strong> The extension uses fuzzy matching to automatically map fields. It handles variations like:
+                    <ul style="margin-top: 10px;">
+                        <li>"lead_score" → "Lead Score" (exact match)</li>
+                        <li>"icp score" → "ICP Score" (contains match)</li>
+                        <li>"linkedin" → "LinkedIn URL" (word match)</li>
+                    </ul>
+                </div>
+
+                <p>Click <strong>"Continue"</strong> to proceed.</p>
+
+                <!-- Step 3: Select & Enrich -->
+                <h3 id="step3"><span class="step-number">3</span> Select Records & Enrich</h3>
+
+                <img
+                    src="screenshots/extension/select-and-enrich.png"
+                    alt="Step 3: Record selection with filtering options and batch configuration"
+                    class="screenshot"
+                >
+
+                <p><strong>Configuration Options:</strong></p>
+
+                <table class="comparison-table">
+                    <tr>
+                        <th>Setting</th>
+                        <th>Description</th>
+                        <th>Recommendation</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Table</strong></td>
+                        <td>Select which table contains your leads</td>
+                        <td>Your main leads table</td>
+                    </tr>
+                    <tr>
+                        <td><strong>View</strong></td>
+                        <td>Select which view to process</td>
+                        <td>Create a filtered view for specific criteria</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Filter</strong></td>
+                        <td>
+                            • <strong>Not enriched yet</strong> - Only records without enrichedAt<br>
+                            • <strong>All records</strong> - Process all matching records<br>
+                            • <strong>Retry failed</strong> - Re-process failed enrichments
+                        </td>
+                        <td>"Not enriched yet" to avoid duplicates</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Max Records</strong></td>
+                        <td>How many records to process (1-1000)</td>
+                        <td>Start with 10-20 for testing</td>
+                    </tr>
+                </table>
+
+                <div class="warning-box">
+                    <strong>⚠️ Selected Records Priority:</strong> If you have records selected in your Airtable view, the extension will ONLY process those selected records (up to the max limit).
+                </div>
+
+                <p>The summary shows:</p>
+                <ul>
+                    <li>✓ Number of selected records (if any)</li>
+                    <li><strong>X records</strong> ready to enrich</li>
+                    <li>AI scoring enabled/disabled</li>
+                    <li>Social profiles enabled/disabled</li>
+                </ul>
+
+                <p>Click <strong>"Enrich X Records"</strong> to start.</p>
+
+                <!-- Enrichment Progress -->
+                <h3 id="progress">⏳ Tracking Progress</h3>
+
+                <div class="screenshot-placeholder">
+                    Enrichment in Progress
+                    <br><small>(Add screenshot: screenshots/05-enrichment-progress.png)</small>
+                </div>
+
+                <p>Once started, you'll see:</p>
+                <ul>
+                    <li><strong>Progress Bar:</strong> Visual indication of completion (0-100%)</li>
+                    <li><strong>Status:</strong> Current activity (Running, Fetching data, Writing to Airtable)</li>
+                    <li><strong>Processed Records:</strong> Count of completed records</li>
+                    <li><strong>Run ID:</strong> Unique identifier for this enrichment run</li>
+                    <li><strong>View in Apify Console →</strong> Link to detailed logs</li>
+                </ul>
+
+                <div class="info-box">
+                    <strong>⏱️ Estimated Time:</strong> Each record takes approximately 3-5 seconds to enrich. A batch of 100 records typically completes in 5-8 minutes.
+                </div>
+
+                <!-- Completion -->
+                <h3 id="completion">✅ Completion</h3>
+
+                <div class="screenshot-placeholder">
+                    Enrichment Complete
+                    <br><small>(Add screenshot: screenshots/06-enrichment-complete.png)</small>
+                </div>
+
+                <p>When complete, you'll see:</p>
+                <ul>
+                    <li>✅ "Enrichment Complete" message</li>
+                    <li>Confirmation that data has been written to Airtable</li>
+                    <li>Final record count and run details</li>
+                    <li><strong>"← Enrich More Leads"</strong> button to return to Step 3</li>
+                </ul>
+
+                <p>All enriched data is automatically written back to your Airtable base using the field mappings you configured.</p>
+
+                <!-- Field Reference -->
+                <h2 id="field-reference">📋 Field Reference</h2>
+
+                <p>Available enriched fields that can be mapped to your Airtable columns:</p>
+
+                <table class="comparison-table">
+                    <tr>
+                        <th>Enriched Field</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>Text</td>
+                        <td>Primary contact email</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>Text</td>
+                        <td>Primary contact phone</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>Text</td>
+                        <td>Physical business address</td>
+                    </tr>
+                    <tr>
+                        <td>Industry</td>
+                        <td>Text</td>
+                        <td>Business industry/category</td>
+                    </tr>
+                    <tr>
+                        <td>Employee Count</td>
+                        <td>Number</td>
+                        <td>Estimated number of employees</td>
+                    </tr>
+                    <tr>
+                        <td>LinkedIn URL</td>
+                        <td>URL</td>
+                        <td>Company LinkedIn profile</td>
+                    </tr>
+                    <tr>
+                        <td>Facebook URL</td>
+                        <td>URL</td>
+                        <td>Company Facebook page</td>
+                    </tr>
+                    <tr>
+                        <td>Twitter Handle</td>
+                        <td>Text</td>
+                        <td>Company Twitter username</td>
+                    </tr>
+                    <tr>
+                        <td>Lead Score</td>
+                        <td>Number (0-100)</td>
+                        <td>AI-generated lead quality score</td>
+                    </tr>
+                    <tr>
+                        <td>ICP Score</td>
+                        <td>Number (0-100)</td>
+                        <td>Ideal customer profile match score</td>
+                    </tr>
+                    <tr>
+                        <td>ICP Reasoning</td>
+                        <td>Long Text</td>
+                        <td>Explanation for ICP score</td>
+                    </tr>
+                    <tr>
+                        <td>Summary</td>
+                        <td>Long Text</td>
+                        <td>AI-generated company summary</td>
+                    </tr>
+                    <tr>
+                        <td>Outreach Angles</td>
+                        <td>Long Text</td>
+                        <td>Suggested outreach strategies</td>
+                    </tr>
+                    <tr>
+                        <td>Tech Stack</td>
+                        <td>Text</td>
+                        <td>Technologies used by company</td>
+                    </tr>
+                    <tr>
+                        <td>Rating</td>
+                        <td>Number</td>
+                        <td>Google Maps rating (if available)</td>
+                    </tr>
+                    <tr>
+                        <td>Review Count</td>
+                        <td>Number</td>
+                        <td>Number of Google reviews</td>
+                    </tr>
+                    <tr>
+                        <td>Category</td>
+                        <td>Text</td>
+                        <td>Business category from Google Maps</td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td>Long Text</td>
+                        <td>Business description</td>
+                    </tr>
+                    <tr>
+                        <td>Data Confidence</td>
+                        <td>Number (0-100)</td>
+                        <td>Confidence score for enriched data</td>
+                    </tr>
+                    <tr>
+                        <td>Enriched At</td>
+                        <td>Date/Time</td>
+                        <td>Timestamp of enrichment</td>
+                    </tr>
+                    <tr>
+                        <td>Enrichment Sources</td>
+                        <td>Text</td>
+                        <td>List of data sources used</td>
+                    </tr>
+                </table>
+
+                <!-- Troubleshooting -->
+                <h2 id="troubleshooting">🔧 Troubleshooting</h2>
+
+                <h3>Extension Won't Load</h3>
+                <ul>
+                    <li>✅ Verify you're using Node.js 14+ and npm 7+</li>
+                    <li>✅ Run <code>npm install</code> in the extension directory</li>
+                    <li>✅ Try <code>npm start</code> again</li>
+                    <li>✅ Clear browser cache and reload</li>
+                </ul>
+
+                <h3>"Invalid API Token" Error</h3>
+                <ul>
+                    <li>✅ Verify Apify token is correct (starts with <code>apify_api_</code>)</li>
+                    <li>✅ Check token hasn't expired</li>
+                    <li>✅ Ensure token has proper permissions in Apify Console</li>
+                </ul>
+
+                <h3>No Records Found</h3>
+                <ul>
+                    <li>✅ Check table and view are selected correctly</li>
+                    <li>✅ Verify records have both Company Name and Website filled</li>
+                    <li>✅ Try "All records" filter first to test</li>
+                    <li>✅ Make sure view isn't filtered to exclude all records</li>
+                </ul>
+
+                <h3>Enrichment Stuck at "Processing"</h3>
+                <ul>
+                    <li>✅ Check Apify console for actual run status</li>
+                    <li>✅ Extension polls every 5 seconds for updates</li>
+                    <li>✅ Large batches (500+ records) can take 25-40 minutes</li>
+                    <li>✅ If stuck for >10 minutes, check run in Apify Console</li>
+                </ul>
+
+                <h3>Data Not Writing to Airtable</h3>
+                <ul>
+                    <li>✅ Verify output field mappings are correct</li>
+                    <li>✅ Check field types match (Number fields need number data)</li>
+                    <li>✅ Ensure field names haven't changed in your base</li>
+                    <li>✅ Check browser console for error messages</li>
+                </ul>
+
+                <!-- Best Practices -->
+                <h2 id="best-practices">💡 Best Practices</h2>
+
+                <h3>Testing Before Production</h3>
+                <ol>
+                    <li>Create a "Test" view with 5-10 known companies</li>
+                    <li>Run enrichment on test view first</li>
+                    <li>Verify all fields populate correctly</li>
+                    <li>Check data quality and accuracy</li>
+                    <li>Then scale to full production batches</li>
+                </ol>
+
+                <h3>Cost Optimization</h3>
+                <ul>
+                    <li>Use "Not enriched yet" filter to avoid re-processing</li>
+                    <li>Start with smaller batches (50-100) to test</li>
+                    <li>Only enable AI features (OpenAI, Hunter.io) when needed</li>
+                    <li>Monitor usage in Apify Console</li>
+                </ul>
+
+                <h3>Field Mapping Tips</h3>
+                <ul>
+                    <li>Use consistent field names (e.g., "Lead Score" not "score lead")</li>
+                    <li>Create numeric fields in Airtable for scores and counts</li>
+                    <li>Use long text fields for summaries and reasoning</li>
+                    <li>URL fields for social media links</li>
+                    <li>Date field for "Enriched At" timestamp</li>
+                </ul>
+
+                <h3>Performance Tips</h3>
+                <ul>
+                    <li>Optimal batch size: 100-200 records</li>
+                    <li>Keep extension tab open during processing</li>
+                    <li>Don't refresh the page during enrichment</li>
+                    <li>Use filtered views to process specific segments</li>
+                </ul>
+
+                <!-- Version History -->
+                <h2 id="version-history">📜 Version History</h2>
+
+                <h3>v1.2.0 (Current - December 2024)</h3>
+                <ul>
+                    <li>✨ Refactored to modular architecture (18 files)</li>
+                    <li>✨ Increased max records from 100 to 1,000</li>
+                    <li>✨ Added smart auto-fill with fuzzy matching</li>
+                    <li>✨ Improved security (show/hide keys, clear all)</li>
+                    <li>✨ Added Terms of Service and Privacy Policy</li>
+                    <li>🐛 Fixed numeric field type conversion</li>
+                    <li>📚 Comprehensive documentation with screenshots</li>
+                </ul>
+
+                <h3>v1.1.0</h3>
+                <ul>
+                    <li>✨ Switched from batch mode to API mode</li>
+                    <li>✨ Removed Airtable PAT requirement</li>
+                    <li>✨ Added flexible field mapping</li>
+                    <li>✨ Added selected records support</li>
+                </ul>
+
+                <h3>v1.0.0</h3>
+                <ul>
+                    <li>🎉 Initial release</li>
+                    <li>✨ Basic enrichment functionality</li>
+                    <li>✨ Progress tracking</li>
+                </ul>
+
+                <!-- Support -->
+                <h2 id="support">🆘 Support & Resources</h2>
+
+                <ul>
+                    <li>📖 <a href="index.html">Main Documentation</a></li>
+                    <li>📜 <a href="terms.html">Terms of Service</a></li>
+                    <li>🔒 <a href="privacy.html">Privacy Policy</a></li>
+                    <li>🐛 <a href="https://github.com/raaihank/apify-airtable-lead-enricher/issues" target="_blank">Report Issues on GitHub</a></li>
+                    <li>💬 <a href="https://console.apify.com" target="_blank">Apify Console</a></li>
+                </ul>
+
+                <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;">
+
+                <p style="text-align: center; color: #666; font-size: 0.9em;">
+                    <a href="index.html">Documentation</a> •
+                    <a href="extension.html">Extension Guide</a> •
+                    <a href="terms.html">Terms</a> •
+                    <a href="privacy.html">Privacy</a>
+                </p>
             </div>
-            <div class="feature-card">
-                <h4>🔒 Secure</h4>
-                <p>Keys stored locally in browser, show/hide toggle, clear all option</p>
-            </div>
-            <div class="feature-card">
-                <h4>📊 Real-time Tracking</h4>
-                <p>Live progress updates with status and completion percentage</p>
-            </div>
-            <div class="feature-card">
-                <h4>🔍 Flexible Filtering</h4>
-                <p>Filter by enrichment status, selected records, or custom views</p>
-            </div>
-            <div class="feature-card">
-                <h4>🤖 AI-Powered</h4>
-                <p>Optional OpenAI integration for lead scoring and insights</p>
-            </div>
-        </div>
-
-        <!-- Installation -->
-        <h2>🚀 Installation</h2>
-
-        <h3><span class="step-number">1</span> Install Dependencies</h3>
-        <p>Navigate to the extension directory and install:</p>
-        <code>cd airtable-extension && npm install</code>
-
-        <h3><span class="step-number">2</span> Start Development Server</h3>
-        <code>npm start</code>
-        <p>This will open your browser and prompt you to select an Airtable base.</p>
-
-        <h3><span class="step-number">3</span> Select Your Base</h3>
-        <p>Choose the base where you want to install the extension. The extension will appear in the right sidebar.</p>
-
-        <div class="screenshot-placeholder">
-            Screenshot: Installation Flow
-            <br><small>(Add screenshot: screenshots/00-installation.png)</small>
-        </div>
-
-        <!-- Quick Start Guide -->
-        <h2>📖 Quick Start Guide</h2>
-
-        <h3>Welcome Screen</h3>
-        <p>When you first open the extension, you'll see a welcome screen with an overview of features:</p>
-
-        <div class="screenshot-placeholder">
-            Welcome Screen
-            <br><small>(Add screenshot: screenshots/01-welcome-screen.png)</small>
-        </div>
-
-        <ul>
-            <li>✅ Email, phone, address from website & Google Maps</li>
-            <li>✅ Company insights: industry, employee count, tech stack</li>
-            <li>✅ AI-powered lead scoring (0-100)</li>
-            <li>✅ Personalized outreach angles for each lead</li>
-            <li>✅ Social media profiles (LinkedIn, Facebook, Twitter)</li>
-        </ul>
-
-        <p>Click <strong>"Get Started - Configure API Keys"</strong> to begin.</p>
-
-        <!-- Step 1: API Keys -->
-        <h3><span class="step-number">1</span> Configure API Keys</h3>
-
-        <img
-            src="screenshots/extension/api-key.png"
-            alt="Step 1: API Keys Configuration with security features and API key inputs"
-            class="screenshot"
-        >
-
-        <p><strong>Required:</strong></p>
-        <ul>
-            <li><strong>Apify API Token:</strong> Get from <a href="https://console.apify.com/account/integrations" target="_blank">console.apify.com</a></li>
-        </ul>
-
-        <p><strong>Optional (for enhanced features):</strong></p>
-        <ul>
-            <li><strong>OpenAI API Key:</strong> For AI-powered lead scoring and insights</li>
-            <li><strong>ICP Criteria:</strong> Your ideal customer profile (e.g., "B2B SaaS, 50-500 employees")</li>
-            <li><strong>Hunter.io API Key:</strong> For LinkedIn, Facebook, Twitter profile discovery</li>
-        </ul>
-
-        <div class="success-box">
-            <strong>✅ No Airtable PAT Required!</strong> The extension uses API mode and has direct access to your Airtable data.
-        </div>
-
-        <p><strong>Security Features:</strong></p>
-        <ul>
-            <li>🔒 Keys stored locally in your browser only</li>
-            <li>👁️ Show/Hide toggle for sensitive data</li>
-            <li>🗑️ Clear All button to reset settings</li>
-        </ul>
-
-        <p>Click <strong>"Continue"</strong> when done.</p>
-
-        <!-- Step 2: Field Mapping -->
-        <h3><span class="step-number">2</span> Map Your Fields</h3>
-
-        <img
-            src="screenshots/extension/field-mapping.png"
-            alt="Step 2: Field Mapping with smart auto-fill and interactive field selection"
-            class="screenshot"
-        >
-
-        <p><strong>Input Fields</strong> (your Airtable data):</p>
-        <ul>
-            <li><strong>Company Name Field:</strong> Which field contains company names</li>
-            <li><strong>Website Field:</strong> Which field contains websites</li>
-            <li><strong>Location Field:</strong> (Optional) Which field contains location data</li>
-        </ul>
-
-        <p><strong>Output Fields</strong> (where to write enriched data):</p>
-        <ul>
-            <li>Click <strong>"Auto-fill"</strong> to automatically match fields using fuzzy matching</li>
-            <li>Or manually select <strong>"+ Add field mapping..."</strong> to map each field</li>
-            <li>Remove unwanted mappings with the <strong>X</strong> button</li>
-        </ul>
-
-        <div class="info-box">
-            <strong>💡 Smart Auto-Fill:</strong> The extension uses fuzzy matching to automatically map fields. It handles variations like:
-            <ul style="margin-top: 10px;">
-                <li>"lead_score" → "Lead Score" (exact match)</li>
-                <li>"icp score" → "ICP Score" (contains match)</li>
-                <li>"linkedin" → "LinkedIn URL" (word match)</li>
-            </ul>
-        </div>
-
-        <p>Click <strong>"Continue"</strong> to proceed.</p>
-
-        <!-- Step 3: Select & Enrich -->
-        <h3><span class="step-number">3</span> Select Records & Enrich</h3>
-
-        <img
-            src="screenshots/extension/select-and-enrich.png"
-            alt="Step 3: Record selection with filtering options and batch configuration"
-            class="screenshot"
-        >
-
-        <p><strong>Configuration Options:</strong></p>
-
-        <table class="comparison-table">
-            <tr>
-                <th>Setting</th>
-                <th>Description</th>
-                <th>Recommendation</th>
-            </tr>
-            <tr>
-                <td><strong>Table</strong></td>
-                <td>Select which table contains your leads</td>
-                <td>Your main leads table</td>
-            </tr>
-            <tr>
-                <td><strong>View</strong></td>
-                <td>Select which view to process</td>
-                <td>Create a filtered view for specific criteria</td>
-            </tr>
-            <tr>
-                <td><strong>Filter</strong></td>
-                <td>
-                    • <strong>Not enriched yet</strong> - Only records without enrichedAt<br>
-                    • <strong>All records</strong> - Process all matching records<br>
-                    • <strong>Retry failed</strong> - Re-process failed enrichments
-                </td>
-                <td>"Not enriched yet" to avoid duplicates</td>
-            </tr>
-            <tr>
-                <td><strong>Max Records</strong></td>
-                <td>How many records to process (1-1000)</td>
-                <td>Start with 10-20 for testing</td>
-            </tr>
-        </table>
-
-        <div class="warning-box">
-            <strong>⚠️ Selected Records Priority:</strong> If you have records selected in your Airtable view, the extension will ONLY process those selected records (up to the max limit).
-        </div>
-
-        <p>The summary shows:</p>
-        <ul>
-            <li>✓ Number of selected records (if any)</li>
-            <li><strong>X records</strong> ready to enrich</li>
-            <li>AI scoring enabled/disabled</li>
-            <li>Social profiles enabled/disabled</li>
-        </ul>
-
-        <p>Click <strong>"Enrich X Records"</strong> to start.</p>
-
-        <!-- Enrichment Progress -->
-        <h3>⏳ Tracking Progress</h3>
-
-        <div class="screenshot-placeholder">
-            Enrichment in Progress
-            <br><small>(Add screenshot: screenshots/05-enrichment-progress.png)</small>
-        </div>
-
-        <p>Once started, you'll see:</p>
-        <ul>
-            <li><strong>Progress Bar:</strong> Visual indication of completion (0-100%)</li>
-            <li><strong>Status:</strong> Current activity (Running, Fetching data, Writing to Airtable)</li>
-            <li><strong>Processed Records:</strong> Count of completed records</li>
-            <li><strong>Run ID:</strong> Unique identifier for this enrichment run</li>
-            <li><strong>View in Apify Console →</strong> Link to detailed logs</li>
-        </ul>
-
-        <div class="info-box">
-            <strong>⏱️ Estimated Time:</strong> Each record takes approximately 3-5 seconds to enrich. A batch of 100 records typically completes in 5-8 minutes.
-        </div>
-
-        <!-- Completion -->
-        <h3>✅ Completion</h3>
-
-        <div class="screenshot-placeholder">
-            Enrichment Complete
-            <br><small>(Add screenshot: screenshots/06-enrichment-complete.png)</small>
-        </div>
-
-        <p>When complete, you'll see:</p>
-        <ul>
-            <li>✅ "Enrichment Complete" message</li>
-            <li>Confirmation that data has been written to Airtable</li>
-            <li>Final record count and run details</li>
-            <li><strong>"← Enrich More Leads"</strong> button to return to Step 3</li>
-        </ul>
-
-        <p>All enriched data is automatically written back to your Airtable base using the field mappings you configured.</p>
-
-        <!-- Field Reference -->
-        <h2>📋 Field Reference</h2>
-
-        <p>Available enriched fields that can be mapped to your Airtable columns:</p>
-
-        <table class="comparison-table">
-            <tr>
-                <th>Enriched Field</th>
-                <th>Type</th>
-                <th>Description</th>
-            </tr>
-            <tr>
-                <td>Email</td>
-                <td>Text</td>
-                <td>Primary contact email</td>
-            </tr>
-            <tr>
-                <td>Phone</td>
-                <td>Text</td>
-                <td>Primary contact phone</td>
-            </tr>
-            <tr>
-                <td>Address</td>
-                <td>Text</td>
-                <td>Physical business address</td>
-            </tr>
-            <tr>
-                <td>Industry</td>
-                <td>Text</td>
-                <td>Business industry/category</td>
-            </tr>
-            <tr>
-                <td>Employee Count</td>
-                <td>Number</td>
-                <td>Estimated number of employees</td>
-            </tr>
-            <tr>
-                <td>LinkedIn URL</td>
-                <td>URL</td>
-                <td>Company LinkedIn profile</td>
-            </tr>
-            <tr>
-                <td>Facebook URL</td>
-                <td>URL</td>
-                <td>Company Facebook page</td>
-            </tr>
-            <tr>
-                <td>Twitter Handle</td>
-                <td>Text</td>
-                <td>Company Twitter username</td>
-            </tr>
-            <tr>
-                <td>Lead Score</td>
-                <td>Number (0-100)</td>
-                <td>AI-generated lead quality score</td>
-            </tr>
-            <tr>
-                <td>ICP Score</td>
-                <td>Number (0-100)</td>
-                <td>Ideal customer profile match score</td>
-            </tr>
-            <tr>
-                <td>ICP Reasoning</td>
-                <td>Long Text</td>
-                <td>Explanation for ICP score</td>
-            </tr>
-            <tr>
-                <td>Summary</td>
-                <td>Long Text</td>
-                <td>AI-generated company summary</td>
-            </tr>
-            <tr>
-                <td>Outreach Angles</td>
-                <td>Long Text</td>
-                <td>Suggested outreach strategies</td>
-            </tr>
-            <tr>
-                <td>Tech Stack</td>
-                <td>Text</td>
-                <td>Technologies used by company</td>
-            </tr>
-            <tr>
-                <td>Rating</td>
-                <td>Number</td>
-                <td>Google Maps rating (if available)</td>
-            </tr>
-            <tr>
-                <td>Review Count</td>
-                <td>Number</td>
-                <td>Number of Google reviews</td>
-            </tr>
-            <tr>
-                <td>Category</td>
-                <td>Text</td>
-                <td>Business category from Google Maps</td>
-            </tr>
-            <tr>
-                <td>Description</td>
-                <td>Long Text</td>
-                <td>Business description</td>
-            </tr>
-            <tr>
-                <td>Data Confidence</td>
-                <td>Number (0-100)</td>
-                <td>Confidence score for enriched data</td>
-            </tr>
-            <tr>
-                <td>Enriched At</td>
-                <td>Date/Time</td>
-                <td>Timestamp of enrichment</td>
-            </tr>
-            <tr>
-                <td>Enrichment Sources</td>
-                <td>Text</td>
-                <td>List of data sources used</td>
-            </tr>
-        </table>
-
-        <!-- Troubleshooting -->
-        <h2>🔧 Troubleshooting</h2>
-
-        <h3>Extension Won't Load</h3>
-        <ul>
-            <li>✅ Verify you're using Node.js 14+ and npm 7+</li>
-            <li>✅ Run <code>npm install</code> in the extension directory</li>
-            <li>✅ Try <code>npm start</code> again</li>
-            <li>✅ Clear browser cache and reload</li>
-        </ul>
-
-        <h3>"Invalid API Token" Error</h3>
-        <ul>
-            <li>✅ Verify Apify token is correct (starts with <code>apify_api_</code>)</li>
-            <li>✅ Check token hasn't expired</li>
-            <li>✅ Ensure token has proper permissions in Apify Console</li>
-        </ul>
-
-        <h3>No Records Found</h3>
-        <ul>
-            <li>✅ Check table and view are selected correctly</li>
-            <li>✅ Verify records have both Company Name and Website filled</li>
-            <li>✅ Try "All records" filter first to test</li>
-            <li>✅ Make sure view isn't filtered to exclude all records</li>
-        </ul>
-
-        <h3>Enrichment Stuck at "Processing"</h3>
-        <ul>
-            <li>✅ Check Apify console for actual run status</li>
-            <li>✅ Extension polls every 5 seconds for updates</li>
-            <li>✅ Large batches (500+ records) can take 25-40 minutes</li>
-            <li>✅ If stuck for >10 minutes, check run in Apify Console</li>
-        </ul>
-
-        <h3>Data Not Writing to Airtable</h3>
-        <ul>
-            <li>✅ Verify output field mappings are correct</li>
-            <li>✅ Check field types match (Number fields need number data)</li>
-            <li>✅ Ensure field names haven't changed in your base</li>
-            <li>✅ Check browser console for error messages</li>
-        </ul>
-
-        <!-- Best Practices -->
-        <h2>💡 Best Practices</h2>
-
-        <h3>Testing Before Production</h3>
-        <ol>
-            <li>Create a "Test" view with 5-10 known companies</li>
-            <li>Run enrichment on test view first</li>
-            <li>Verify all fields populate correctly</li>
-            <li>Check data quality and accuracy</li>
-            <li>Then scale to full production batches</li>
-        </ol>
-
-        <h3>Cost Optimization</h3>
-        <ul>
-            <li>Use "Not enriched yet" filter to avoid re-processing</li>
-            <li>Start with smaller batches (50-100) to test</li>
-            <li>Only enable AI features (OpenAI, Hunter.io) when needed</li>
-            <li>Monitor usage in Apify Console</li>
-        </ul>
-
-        <h3>Field Mapping Tips</h3>
-        <ul>
-            <li>Use consistent field names (e.g., "Lead Score" not "score lead")</li>
-            <li>Create numeric fields in Airtable for scores and counts</li>
-            <li>Use long text fields for summaries and reasoning</li>
-            <li>URL fields for social media links</li>
-            <li>Date field for "Enriched At" timestamp</li>
-        </ul>
-
-        <h3>Performance Tips</h3>
-        <ul>
-            <li>Optimal batch size: 100-200 records</li>
-            <li>Keep extension tab open during processing</li>
-            <li>Don't refresh the page during enrichment</li>
-            <li>Use filtered views to process specific segments</li>
-        </ul>
-
-        <!-- Version History -->
-        <h2>📜 Version History</h2>
-
-        <h3>v1.2.0 (Current - December 2024)</h3>
-        <ul>
-            <li>✨ Refactored to modular architecture (18 files)</li>
-            <li>✨ Increased max records from 100 to 1,000</li>
-            <li>✨ Added smart auto-fill with fuzzy matching</li>
-            <li>✨ Improved security (show/hide keys, clear all)</li>
-            <li>✨ Added Terms of Service and Privacy Policy</li>
-            <li>🐛 Fixed numeric field type conversion</li>
-            <li>📚 Comprehensive documentation with screenshots</li>
-        </ul>
-
-        <h3>v1.1.0</h3>
-        <ul>
-            <li>✨ Switched from batch mode to API mode</li>
-            <li>✨ Removed Airtable PAT requirement</li>
-            <li>✨ Added flexible field mapping</li>
-            <li>✨ Added selected records support</li>
-        </ul>
-
-        <h3>v1.0.0</h3>
-        <ul>
-            <li>🎉 Initial release</li>
-            <li>✨ Basic enrichment functionality</li>
-            <li>✨ Progress tracking</li>
-        </ul>
-
-        <!-- Support -->
-        <h2>🆘 Support & Resources</h2>
-
-        <ul>
-            <li>📖 <a href="index.html">Main Documentation</a></li>
-            <li>📜 <a href="terms.html">Terms of Service</a></li>
-            <li>🔒 <a href="privacy.html">Privacy Policy</a></li>
-            <li>🐛 <a href="https://github.com/raaihank/apify-airtable-lead-enricher/issues" target="_blank">Report Issues on GitHub</a></li>
-            <li>💬 <a href="https://console.apify.com" target="_blank">Apify Console</a></li>
-        </ul>
-
-        <hr style="margin: 40px 0; border: none; border-top: 1px solid #ddd;">
-
-        <p style="text-align: center; color: #666; font-size: 0.9em;">
-            <a href="index.html">Documentation</a> •
-            <a href="extension.html">Extension Guide</a> •
-            <a href="terms.html">Terms</a> •
-            <a href="privacy.html">Privacy</a>
-        </p>
+        </main>
     </div>
 </body>
 </html>

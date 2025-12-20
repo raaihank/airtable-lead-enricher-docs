@@ -36,6 +36,40 @@
             opacity: 0.9;
         }
 
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn-with-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            color: #333;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-with-logo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .btn-logo {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -167,8 +201,15 @@
     <header>
         <h1>Airtable Lead Enricher</h1>
         <p>Automatically enrich your Airtable CRM leads with contact info, company data, and AI-powered lead scoring</p>
-        <div style="margin-top: 1.5rem;">
-            <a href="https://apify.com/raihank/airtable-lead-enricher" class="btn">Try on Apify</a>
+        <div class="button-group">
+            <a href="https://apify.com/raihank/airtable-lead-enricher" class="btn-with-logo">
+                <img src="https://apify.com/favicon.ico" alt="Apify" class="btn-logo">
+                Try on Apify
+            </a>
+            <a href="extension.html" class="btn-with-logo">
+                <img src="https://airtable.com/images/favicon/baymax/favicon-32x32.png" alt="Airtable" class="btn-logo">
+                Try Airtable Extension
+            </a>
         </div>
     </header>
 
@@ -209,10 +250,6 @@
                 <a href="integrations.html" class="doc-link">
                     <h3>🔌 API Integrations</h3>
                     <p>Use without Airtable via API mode (Lambda, Airflow, etc.)</p>
-                </a>
-                <a href="https://apify.com/raihank/airtable-lead-enricher#readme" class="doc-link">
-                    <h3>📖 README</h3>
-                    <p>Overview, features, and examples</p>
                 </a>
             </div>
         </div>
