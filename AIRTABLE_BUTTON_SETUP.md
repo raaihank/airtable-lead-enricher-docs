@@ -394,7 +394,7 @@ Having trouble? Check:
 1. Email: contact@datahq.pro
 2. [Full Documentation](https://docs.airtable-lead-enricher.datahq.pro)
 3. [Troubleshooting Guide](README.md#troubleshooting)
-4. [Report Issue](https://github.com/raaihank/apify-airtable-lead-enricher/issues)
+4. [Report Issue](https://apify.com/datahq/airtable-lead-enricher/issues/open)
 
 ---
 
