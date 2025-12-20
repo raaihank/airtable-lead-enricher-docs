@@ -188,7 +188,8 @@ To contribute to documentation:
 
 ## Support
 
-For documentation issues:
+For questions or support:
+- Email: contact@datahq.pro
 - Open an issue: https://github.com/raaihank/apify-airtable-lead-enricher/issues
 - Tag with `documentation` label
 
