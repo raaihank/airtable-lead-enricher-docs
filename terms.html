@@ -101,8 +101,12 @@
         <h2>1. Agreement to Terms</h2>
         <p>By installing and using the Airtable Lead Enricher extension ("Extension", "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Extension.</p>
 
+        <div class="info-box">
+            <strong>🎯 Official Extension:</strong> This is the <strong>official Airtable extension</strong> for the DataHQ Lead Enricher Apify actor. DataHQ owns and operates both the extension, the underlying Apify actor, and the Vercel proxy infrastructure. All intellectual property, code, and services are owned by DataHQ.
+        </div>
+
         <h2>2. Description of Service</h2>
-        <p>The Airtable Lead Enricher is an extension for Airtable that:</p>
+        <p>The Airtable Lead Enricher is the official extension for the DataHQ Lead Enricher Apify actor. The extension:</p>
         <ul>
             <li>Reads company information from your Airtable records</li>
             <li>Enriches this data using third-party services (Apify, Google Maps, web scraping)</li>
@@ -147,8 +151,15 @@
         </ul>
         <p>We are not responsible for any issues, costs, or damages arising from your use of third-party services.</p>
 
-        <h2>6. Intellectual Property</h2>
-        <p>The Extension is provided as open-source software. The source code and documentation are available on GitHub and subject to the license terms specified in the repository.</p>
+        <h2>6. Intellectual Property and Ownership</h2>
+        <p><strong>DataHQ owns all intellectual property rights</strong> to:</p>
+        <ul>
+            <li>The Airtable Lead Enricher extension (this Extension)</li>
+            <li>The DataHQ Lead Enricher Apify actor</li>
+            <li>The Vercel proxy infrastructure</li>
+            <li>All associated documentation, code, and services</li>
+        </ul>
+        <p>The Extension source code and documentation are available on GitHub and subject to the license terms specified in the repository. Your use of the Extension does not grant you any ownership rights to the intellectual property.</p>
 
         <h2>7. Disclaimer of Warranties</h2>
         <p>THE EXTENSION IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO:</p>
@@ -176,9 +187,10 @@
         <ul>
             <li>You remain the data controller for all data processed through the Extension</li>
             <li>You are responsible for ensuring GDPR, CCPA, and other privacy law compliance</li>
-            <li>The Extension does not store your data on our servers</li>
-            <li>All processing occurs within your Airtable workspace or through your configured third-party services</li>
-            <li>See our <a href="privacy.html">Privacy Policy</a> for more details</li>
+            <li><strong>Data Flow:</strong> Your data is routed through DataHQ's Vercel proxy to the DataHQ Apify actor for processing. The proxy and actor do not retain copies of your data.</li>
+            <li>All processing occurs transiently through DataHQ's infrastructure, with results returned to your Airtable workspace</li>
+            <li>Optional third-party services (OpenAI, Hunter.io) are used only if you configure them with your own API keys</li>
+            <li>See our <a href="privacy.html">Privacy Policy</a> for complete details on data flow and security</li>
         </ul>
 
         <h2>10. Modifications to the Service</h2>

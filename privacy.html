@@ -92,7 +92,10 @@
         <p class="last-updated">Last Updated: December 20, 2024</p>
 
         <h2>Introduction</h2>
-        <p>This Privacy Policy describes how the Airtable Lead Enricher extension ("Extension", "we", "our") handles your information. We are committed to protecting your privacy and being transparent about our data practices.</p>
+        <p>This Privacy Policy describes how the Airtable Lead Enricher extension ("Extension", "we", "our") handles your information. This Extension is the <strong>official extension</strong> for the DataHQ Lead Enricher Apify actor, developed and maintained by DataHQ. We are committed to protecting your privacy and being transparent about our data practices.</p>
+
+        <h2>Ownership and Official Status</h2>
+        <p><strong>This is the official Airtable extension for the DataHQ Lead Enricher Apify actor.</strong> DataHQ owns and operates both the extension and the underlying Apify actor infrastructure. All intellectual property, code, and services are owned by DataHQ.</p>
 
         <h2>Information We Collect</h2>
         <p>The Extension operates entirely within your Airtable workspace and does not collect or store any personal information on our servers. Specifically:</p>
@@ -107,24 +110,36 @@
         <h2>How We Use Your Information</h2>
         <p>Your data is used solely to provide the enrichment functionality:</p>
         <ul>
-            <li><strong>Enrichment Processing:</strong> Company data from your Airtable is sent to Apify actors to retrieve enriched business information (email, phone, social profiles, etc.)</li>
+            <li><strong>Enrichment Processing:</strong> Company data from your Airtable is routed through DataHQ's secure Vercel proxy to our Apify actor for enrichment processing. The proxy ensures secure communication and does not store any data - it only routes requests to the Apify API. All enrichment processing is performed by DataHQ's Apify actor infrastructure to retrieve enriched business information (email, phone, social profiles, etc.)</li>
             <li><strong>AI Analysis:</strong> If you configure OpenAI integration, company data is sent to OpenAI's API for lead scoring and ICP matching</li>
             <li><strong>Social Profile Lookup:</strong> If you configure Hunter.io, domain information is sent to Hunter.io to find social media profiles</li>
             <li><strong>Results Storage:</strong> Enriched data is written back to your Airtable base. No copies are retained by us.</li>
         </ul>
 
+        <h2>Data Flow Architecture</h2>
+        <p><strong>Important:</strong> All data processing flows through DataHQ-owned infrastructure:</p>
+        <ul>
+            <li><strong>Step 1:</strong> Your Airtable data is sent from the extension to DataHQ's Vercel proxy</li>
+            <li><strong>Step 2:</strong> The proxy securely routes the request to DataHQ's Apify actor</li>
+            <li><strong>Step 3:</strong> The Apify actor performs enrichment using various data sources</li>
+            <li><strong>Step 4:</strong> Enriched results are returned through the proxy to your Airtable base</li>
+            <li><strong>Data Retention:</strong> DataHQ's proxy and actor infrastructure do not retain copies of your data. All data flows through our systems transiently for processing only.</li>
+        </ul>
+
         <h2>Data Storage and Security</h2>
         <ul>
             <li><strong>Local Storage:</strong> All configuration settings and API keys are stored locally in your browser using Airtable's secure GlobalConfig mechanism</li>
-            <li><strong>No Server Storage:</strong> We do not operate any servers that store your data</li>
+            <li><strong>DataHQ Infrastructure:</strong> DataHQ operates the Vercel proxy and Apify actor infrastructure through which your data flows. This infrastructure is designed for transient processing only - no copies of your data are stored on DataHQ servers.</li>
+            <li><strong>Secure Transmission:</strong> All data transmitted through DataHQ's proxy to the Apify actor uses HTTPS encryption</li>
             <li><strong>Airtable Security:</strong> Your data remains within Airtable's infrastructure, protected by their security measures</li>
-            <li><strong>Third-Party Services:</strong> When you use third-party APIs (Apify, OpenAI, Hunter.io), data is transmitted securely via HTTPS to those services and subject to their respective privacy policies</li>
+            <li><strong>Third-Party Services:</strong> When you use third-party APIs (OpenAI, Hunter.io), data is transmitted securely via HTTPS to those services and subject to their respective privacy policies</li>
         </ul>
 
         <h2>Data Sharing</h2>
-        <p>We do not share, sell, or rent your personal information. Data is only shared with third-party services that you explicitly configure:</p>
+        <p>We do not share, sell, or rent your personal information. Data flows through DataHQ-owned infrastructure and is only shared with third-party services that you explicitly configure:</p>
         <ul>
-            <li><strong>Apify:</strong> Company data is sent to Apify actors for enrichment processing</li>
+            <li><strong>DataHQ Infrastructure:</strong> All data is processed through DataHQ's Vercel proxy and Apify actor (both owned and operated by DataHQ)</li>
+            <li><strong>Apify Platform:</strong> DataHQ's actor runs on the Apify platform for enrichment processing</li>
             <li><strong>OpenAI:</strong> Company data is sent for AI-powered lead scoring (only if you provide an API key)</li>
             <li><strong>Hunter.io:</strong> Domain information is sent for social profile lookup (only if you provide an API key)</li>
         </ul>
