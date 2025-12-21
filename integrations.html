@@ -292,6 +292,7 @@
             <nav>
                 <ul class="toc">
                     <li><a href="#overview">API Mode Overview</a></li>
+                    <li><a href="#self-hosted">Self-Hosted Deployment</a></li>
                     <li><a href="#python">Python Example</a></li>
                     <li><a href="#nodejs">Node.js Example</a></li>
                     <li><a href="#output-schema">Output Schema</a></li>
@@ -345,6 +346,92 @@
                         </tr>
                     </tbody>
                 </table>
+
+                <h2 id="self-hosted">🏢 Self-Hosted Deployment</h2>
+
+                <p>For teams processing high volumes or needing data to stay on-premise, we offer a fully self-hosted deployment option.</p>
+
+                <div class="success-box">
+                    <strong>🎯 Enterprise Solution:</strong> Get complete control over your lead enrichment infrastructure with deployment to your own AWS Lambda or container environment.
+                </div>
+
+                <h3>What You Get</h3>
+                <ul>
+                    <li><strong>Full Deployment:</strong> Complete setup to your AWS Lambda or container environment (ECS, Kubernetes, etc.)</li>
+                    <li><strong>Source Code License:</strong> Full access to the enrichment engine source code with commercial license</li>
+                    <li><strong>Airtable Integration:</strong> Seamless integration with your existing Airtable workspace</li>
+                    <li><strong>Setup Documentation:</strong> Comprehensive deployment guides and technical documentation</li>
+                    <li><strong>Customization Support:</strong> Initial support for custom integrations and modifications</li>
+                </ul>
+
+                <h3>Best For</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Use Case</th>
+                            <th>Why Self-Hosted?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>High Volume Processing</strong></td>
+                            <td>50,000+ leads per month with predictable costs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Compliance Requirements</strong></td>
+                            <td>HIPAA, SOC2, or internal data policies requiring on-premise processing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Sovereignty</strong></td>
+                            <td>Data must remain within specific geographic regions or cloud accounts</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custom Integrations</strong></td>
+                            <td>Need to modify enrichment logic or integrate proprietary data sources</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost Optimization</strong></td>
+                            <td>At scale, self-hosted can be more cost-effective than per-lead pricing</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Architecture Options</h3>
+
+                <h4>Option 1: AWS Lambda</h4>
+                <ul>
+                    <li>Serverless deployment with automatic scaling</li>
+                    <li>Pay only for compute time used</li>
+                    <li>Integrates with S3, DynamoDB, and other AWS services</li>
+                    <li>Best for: Variable workloads, event-driven architectures</li>
+                </ul>
+
+                <h4>Option 2: Container Deployment (ECS/Kubernetes)</h4>
+                <ul>
+                    <li>Full control over compute resources</li>
+                    <li>Supports complex enrichment workflows</li>
+                    <li>Can run on AWS ECS, Google Kubernetes Engine, or on-premise clusters</li>
+                    <li>Best for: Steady workloads, maximum customization</li>
+                </ul>
+
+                <h3>Pricing</h3>
+                <p><strong style="font-size: 1.3rem; color: #667eea;">Starting at $1,000</strong></p>
+                <p>One-time fee includes deployment, source code license, and initial setup support.</p>
+
+                <div class="info-box">
+                    <strong>💰 Cost Comparison:</strong> For teams processing 50,000+ leads/month, self-hosted deployment typically pays for itself within 2-3 months compared to per-lead pricing ($0.03/lead = $1,500/month for 50k leads).
+                </div>
+
+                <h3>Get Started</h3>
+                <p>Contact us to discuss your requirements and deployment timeline:</p>
+                <p><strong>📧 Email:</strong> <a href="mailto:contact@datahq.pro">contact@datahq.pro</a></p>
+                <p>We'll schedule a consultation to:</p>
+                <ul>
+                    <li>Understand your volume and compliance requirements</li>
+                    <li>Recommend the best architecture for your use case</li>
+                    <li>Provide a detailed deployment plan and timeline</li>
+                    <li>Answer any technical questions</li>
+                </ul>
 
                 <h2 id="python">Python Example</h2>
                 <p>Enrich leads using Python with both asynchronous and synchronous approaches:</p>
