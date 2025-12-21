@@ -50,8 +50,32 @@
 
     <div class="container">
         <div class="card">
-            <h2>Quick Start</h2>
-            <p>Call the Actor API from any platform:</p>
+            <h2>Processing Modes</h2>
+            <p>Choose how to use the enricher:</p>
+
+            <table>
+                <tr><th>Mode</th><th>Use Case</th><th>Needs Airtable?</th></tr>
+                <tr>
+                    <td><code>batch</code></td>
+                    <td>Read from Airtable, enrich, write back</td>
+                    <td>✅ Yes - requires apiKey, baseId, tableId</td>
+                </tr>
+                <tr>
+                    <td><code>single</code></td>
+                    <td>Enrich specific Airtable records</td>
+                    <td>✅ Yes - same as batch + recordIds</td>
+                </tr>
+                <tr>
+                    <td><code>api</code></td>
+                    <td>Standalone enrichment (no Airtable)</td>
+                    <td>❌ No - just provide companies array</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Quick Start (API Mode)</h2>
+            <p>Use without Airtable - perfect for integrations:</p>
             <pre><code class="language-bash">POST https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items?token=YOUR_TOKEN
 
 {
@@ -60,7 +84,8 @@
     {"companyName": "Acme Corp", "website": "https://acme.example"}
   ]
 }</code></pre>
-            <p><strong>Max 1000 companies per run</strong></p>
+            <p><strong>Max 1000 companies per run (API mode)</strong></p>
+            <p><strong>For Airtable mode:</strong> Max 100 records per run</p>
         </div>
 
         <div class="card">

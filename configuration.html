@@ -365,21 +365,94 @@
 
                 <p><strong>This guide</strong> provides a comprehensive reference for all configuration options available in the Airtable Lead Enricher. Use this to customize the actor's behavior for your specific needs.</p>
 
+                <!-- Processing Modes -->
+                <h2 id="modes-overview">Processing Modes</h2>
+                <p>Choose how to run the enricher. Each mode has different requirements.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mode</th>
+                            <th>Description</th>
+                            <th>Airtable Config?</th>
+                            <th>Required Fields</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>batch</code></td>
+                            <td>Read from Airtable view/filter, enrich, write back</td>
+                            <td>✅ Yes</td>
+                            <td><code>airtable.apiKey</code>, <code>airtable.baseId</code>, <code>airtable.tableId</code>, <code>airtable.inputFields</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>single</code></td>
+                            <td>Enrich specific Airtable records by ID</td>
+                            <td>✅ Yes</td>
+                            <td>Same as batch + <code>recordIds</code> array</td>
+                        </tr>
+                        <tr>
+                            <td><code>api</code></td>
+                            <td>Standalone mode - no Airtable needed</td>
+                            <td>❌ No</td>
+                            <td>Only <code>companies</code> array</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Example Configs by Mode</h3>
+
+                <h4>Batch Mode</h4>
+                <pre><code class="language-json">{
+  "mode": "batch",
+  "airtable": {
+    "apiKey": "patXXXX",
+    "baseId": "appXXXX",
+    "tableId": "tblXXXX",
+    "inputFields": {"companyName": "Company Name"}
+  }
+}</code></pre>
+
+                <h4>Single Mode</h4>
+                <pre><code class="language-json">{
+  "mode": "single",
+  "recordIds": ["recABC123", "recXYZ789"],
+  "airtable": {
+    "apiKey": "patXXXX",
+    "baseId": "appXXXX",
+    "tableId": "tblXXXX",
+    "inputFields": {"companyName": "Company Name"}
+  }
+}</code></pre>
+
+                <h4>API Mode (No Airtable)</h4>
+                <pre><code class="language-json">{
+  "mode": "api",
+  "companies": [
+    {"companyName": "Acme Corp", "website": "https://acme.example"}
+  ]
+}</code></pre>
+
+                <div class="warning" style="margin-top: 20px;">
+                    <strong>⚠️ Mode Selection:</strong> For API mode, you do <strong>NOT</strong> need any Airtable configuration. Use <code>companies</code> array instead.
+                </div>
+
                 <!-- Airtable Configuration -->
                 <h2 id="airtable">Airtable Configuration</h2>
+                <p><strong>Required for:</strong> <code>batch</code> and <code>single</code> modes only. Not needed for <code>api</code> mode.</p>
 
-                <h3 id="airtable-apiKey">airtable.apiKey <span class="badge badge-required">REQUIRED</span></h3>
+                <h3 id="airtable-apiKey">airtable.apiKey <span class="badge badge-required">REQUIRED (batch/single)</span></h3>
                 <p>Personal Access Token for Airtable authentication.</p>
                 <p><strong>Format:</strong> Starts with <code>pat</code> (e.g., <code>patKeHwfnyPGvDBqR.256fce...</code>)</p>
                 <p><strong>Get it:</strong> <a href="https://airtable.com/create/tokens" target="_blank">airtable.com/create/tokens</a></p>
                 <p><strong>Scopes needed:</strong> <code>data.records:read</code>, <code>data.records:write</code></p>
 
-                <h3 id="airtable-baseId">airtable.baseId <span class="badge badge-required">REQUIRED</span></h3>
+                <h3 id="airtable-baseId">airtable.baseId <span class="badge badge-required">REQUIRED (batch/single)</span></h3>
                 <p>Your Airtable base identifier.</p>
                 <p><strong>Format:</strong> Starts with <code>app</code> (e.g., <code>appPrgvMR47ajmY5w</code>)</p>
                 <p><strong>Get it:</strong> From URL <code>https://airtable.com/appXXXXXX/...</code></p>
 
-                <h3 id="airtable-tableId">airtable.tableId <span class="badge badge-required">REQUIRED</span></h3>
+                <h3 id="airtable-tableId">airtable.tableId <span class="badge badge-required">REQUIRED (batch/single)</span></h3>
                 <p>Table identifier within the base.</p>
                 <p><strong>Format:</strong> Starts with <code>tbl</code> (e.g., <code>tblez6ty6e5hJCfoe</code>)</p>
                 <p><strong>Get it:</strong> Click <code>...</code> on table → "Copy table ID"</p>
@@ -403,7 +476,7 @@
                 <h3 id="airtable-maxRecords">airtable.maxRecords <span class="badge badge-optional">OPTIONAL</span></h3>
                 <p>Max records per run. Range: 1-100. Default: 100.</p>
 
-                <h3 id="airtable-inputFields">airtable.inputFields <span class="badge badge-required">REQUIRED</span></h3>
+                <h3 id="airtable-inputFields">airtable.inputFields <span class="badge badge-required">REQUIRED (batch/single)</span></h3>
                 <p>Maps internal field names to your Airtable columns.</p>
                 <table>
                     <thead>
