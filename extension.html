@@ -354,7 +354,6 @@
                     <li><a href="#field-reference">Field Reference</a></li>
                     <li><a href="#troubleshooting">Troubleshooting</a></li>
                     <li><a href="#best-practices">Best Practices</a></li>
-                    <li><a href="#version-history">Version History</a></li>
                     <li><a href="#support">Support & Resources</a></li>
                 </ul>
             </nav>
@@ -755,43 +754,39 @@
                 <!-- Troubleshooting -->
                 <h2 id="troubleshooting">🔧 Troubleshooting</h2>
 
-                <h3>Extension Won't Load</h3>
+                <h3>"Invalid API Token"</h3>
                 <ul>
-                    <li>✅ Verify you're using Node.js 14+ and npm 7+</li>
-                    <li>✅ Run <code>npm install</code> in the extension directory</li>
-                    <li>✅ Try <code>npm start</code> again</li>
-                    <li>✅ Clear browser cache and reload</li>
-                </ul>
-
-                <h3>"Invalid API Token" Error</h3>
-                <ul>
-                    <li>✅ Verify Apify token is correct (starts with <code>apify_api_</code>)</li>
+                    <li>✅ Token must start with <code>apify_api_</code></li>
+                    <li>✅ Get token from <a href="https://console.apify.com/settings/integrations" target="_blank">Apify Console</a></li>
                     <li>✅ Check token hasn't expired</li>
-                    <li>✅ Ensure token has proper permissions in Apify Console</li>
                 </ul>
 
                 <h3>No Records Found</h3>
                 <ul>
-                    <li>✅ Check table and view are selected correctly</li>
-                    <li>✅ Verify records have both Company Name and Website filled</li>
-                    <li>✅ Try "All records" filter first to test</li>
-                    <li>✅ Make sure view isn't filtered to exclude all records</li>
+                    <li>✅ Select correct table and view</li>
+                    <li>✅ Records must have Company Name filled</li>
+                    <li>✅ Try "All records" filter first</li>
                 </ul>
 
-                <h3>Enrichment Stuck at "Processing"</h3>
+                <h3>Enrichment Stuck</h3>
                 <ul>
-                    <li>✅ Check Apify console for actual run status</li>
-                    <li>✅ Extension polls every 5 seconds for updates</li>
-                    <li>✅ Large batches (500+ records) can take 25-40 minutes</li>
-                    <li>✅ If stuck for >10 minutes, check run in Apify Console</li>
+                    <li>✅ Check <a href="https://console.apify.com/actors/runs" target="_blank">Apify Console</a> for run status</li>
+                    <li>✅ Large batches (500+ records) take 25-40 minutes</li>
+                    <li>✅ Keep extension tab open during processing</li>
                 </ul>
 
-                <h3>Data Not Writing to Airtable</h3>
+                <h3>Data Not Writing</h3>
                 <ul>
-                    <li>✅ Verify output field mappings are correct</li>
-                    <li>✅ Check field types match (Number fields need number data)</li>
-                    <li>✅ Ensure field names haven't changed in your base</li>
-                    <li>✅ Check browser console for error messages</li>
+                    <li>✅ Field names are case-sensitive</li>
+                    <li>✅ Number fields need Number type in Airtable</li>
+                    <li>✅ Check field names haven't changed</li>
+                </ul>
+
+                <h3>Extension Not Showing</h3>
+                <ul>
+                    <li>✅ Refresh Airtable page</li>
+                    <li>✅ Check Extensions panel (puzzle icon)</li>
+                    <li>✅ Try different browser (Chrome/Firefox/Safari)</li>
                 </ul>
 
                 <!-- Best Practices -->
@@ -829,35 +824,6 @@
                     <li>Keep extension tab open during processing</li>
                     <li>Don't refresh the page during enrichment</li>
                     <li>Use filtered views to process specific segments</li>
-                </ul>
-
-                <!-- Version History -->
-                <h2 id="version-history">📜 Version History</h2>
-
-                <h3>v1.2.0 (Current - December 2025)</h3>
-                <ul>
-                    <li>✨ Refactored to modular architecture (18 files)</li>
-                    <li>✨ Increased max records from 100 to 1,000</li>
-                    <li>✨ Added smart auto-fill with fuzzy matching</li>
-                    <li>✨ Improved security (show/hide keys, clear all)</li>
-                    <li>✨ Added Terms of Service and Privacy Policy</li>
-                    <li>🐛 Fixed numeric field type conversion</li>
-                    <li>📚 Comprehensive documentation with screenshots</li>
-                </ul>
-
-                <h3>v1.1.0</h3>
-                <ul>
-                    <li>✨ Switched from batch mode to API mode</li>
-                    <li>✨ Removed Airtable PAT requirement</li>
-                    <li>✨ Added flexible field mapping</li>
-                    <li>✨ Added selected records support</li>
-                </ul>
-
-                <h3>v1.0.0</h3>
-                <ul>
-                    <li>🎉 Initial release</li>
-                    <li>✨ Basic enrichment functionality</li>
-                    <li>✨ Progress tracking</li>
                 </ul>
 
                 <!-- Support -->
