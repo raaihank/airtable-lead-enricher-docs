@@ -295,6 +295,7 @@
                     <li><a href="#self-hosted">Self-Hosted Deployment</a></li>
                     <li><a href="#python">Python Example</a></li>
                     <li><a href="#nodejs">Node.js Example</a></li>
+                    <li><a href="#bedrock">AWS Bedrock Example</a></li>
                     <li><a href="#output-schema">Output Schema</a></li>
                     <li><a href="#webhook">Webhook Integration</a></li>
                     <li><a href="#lambda">AWS Lambda</a></li>
@@ -533,6 +534,90 @@ const companies = [
 enrichLeads(companies).then(results => {
     console.log(results);
 });</code></pre>
+
+                <h2 id="bedrock">AWS Bedrock Example (New!)</h2>
+                <p>Use AWS Bedrock for cost-effective AI scoring with Claude models. Bedrock now supports simple API key authentication (no IAM credentials needed):</p>
+
+                <div class="success-box">
+                    <strong>🆕 Bedrock API Keys:</strong> As of July 2025, AWS Bedrock supports API key authentication! Generate a key in the <a href="https://console.aws.amazon.com/bedrock/" target="_blank">Bedrock Console</a> and use it directly - no need for AWS Access Keys.
+                </div>
+
+                <h3>Setup</h3>
+                <ol>
+                    <li>Go to <a href="https://console.aws.amazon.com/bedrock/" target="_blank">AWS Bedrock Console</a></li>
+                    <li>Navigate to <strong>API keys</strong> → <strong>Generate API key</strong></li>
+                    <li>Choose <strong>Long-term</strong> (for production) or <strong>Short-term</strong> (for testing)</li>
+                    <li>Copy the generated API key</li>
+                </ol>
+
+                <h3>Python Example</h3>
+                <pre><code class="language-python">import requests
+
+APIFY_TOKEN = "your_apify_token"
+BEDROCK_API_KEY = "your_bedrock_api_key"
+
+response = requests.post(
+    "https://api.apify.com/v2/acts/datahq~airtable-lead-enricher/run-sync-get-dataset-items",
+    params={"token": APIFY_TOKEN},
+    json={
+        "mode": "api",
+        "companies": [
+            {"companyName": "Grab", "website": "https://grab.com", "location": "Singapore"},
+            {"companyName": "Gojek", "website": "https://gojek.com", "location": "Jakarta"}
+        ],
+        "enrichment": {
+            "sources": ["google_maps", "website"]
+        },
+        "llm": {
+            "enabled": True,
+            "provider": "bedrock",
+            "apiKey": BEDROCK_API_KEY,
+            "region": "us-east-1",
+            "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+        },
+        "scoring": {
+            "enabled": True,
+            "icpCriteria": "Southeast Asian tech companies with Series B+ funding"
+        }
+    },
+    timeout=300
+)
+
+results = response.json()
+for company in results:
+    print(f"{company['companyName']}: Lead Score {company['leadScore']}/100")</code></pre>
+
+                <div class="warning-box">
+                    <strong>⚠️ Important:</strong> Use <strong>inference profile IDs</strong> (e.g., <code>us.anthropic.claude-haiku-4-5-20251001-v1:0</code>), not direct model IDs. The <code>us.</code> prefix is required for us-east-1 region.
+                </div>
+
+                <h3>Available Models</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Inference Profile ID (us-east-1)</th>
+                            <th>Cost/Lead</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Claude Haiku 4.5</td>
+                            <td><code>us.anthropic.claude-haiku-4-5-20251001-v1:0</code></td>
+                            <td>~$0.0004</td>
+                        </tr>
+                        <tr>
+                            <td>Claude Sonnet 4.5</td>
+                            <td><code>us.anthropic.claude-sonnet-4-5-20250929-v1:0</code></td>
+                            <td>~$0.002</td>
+                        </tr>
+                        <tr>
+                            <td>Claude Opus 4.5</td>
+                            <td><code>us.anthropic.claude-opus-4-5-20251101-v1:0</code></td>
+                            <td>~$0.015</td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <h2 id="output-schema">Output Schema</h2>
                 <p>Each enriched lead returns the following JSON structure:</p>

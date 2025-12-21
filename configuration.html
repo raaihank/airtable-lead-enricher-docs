@@ -578,22 +578,58 @@
                         </tr>
                         <tr>
                             <td><code>bedrock</code></td>
-                            <td>claude-3-5-haiku</td>
+                            <td>claude-haiku-4-5</td>
                             <td>~$0.0004</td>
                         </tr>
                     </tbody>
                 </table>
 
+                <div class="info-box">
+                    <strong>🆕 AWS Bedrock API Keys (July 2025):</strong> Bedrock now supports simple API key authentication! No need for IAM credentials. Generate an API key in the <a href="https://console.aws.amazon.com/bedrock/" target="_blank">Bedrock Console</a> and use it directly.
+                </div>
+
                 <h3 id="llm-apiKey">llm.apiKey <span class="badge badge-required">REQUIRED</span></h3>
                 <p>Your LLM API key.</p>
                 <ul>
-                    <li>OpenAI: Starts with <code>sk-proj-</code> or <code>sk-</code></li>
-                    <li>Anthropic: Starts with <code>sk-ant-</code></li>
-                    <li>Bedrock: Uses AWS credentials</li>
+                    <li><strong>OpenAI:</strong> Starts with <code>sk-proj-</code> or <code>sk-</code></li>
+                    <li><strong>Anthropic:</strong> Starts with <code>sk-ant-</code></li>
+                    <li><strong>AWS Bedrock (New!):</strong> Bedrock API key - Generate in <a href="https://console.aws.amazon.com/bedrock/" target="_blank">Bedrock Console</a> → API keys</li>
+                    <li><strong>AWS Bedrock (Legacy):</strong> Can still use <code>awsAccessKeyId</code> + <code>awsSecretAccessKey</code> instead of <code>apiKey</code></li>
                 </ul>
 
                 <h3 id="llm-model">llm.model <span class="badge badge-optional">OPTIONAL</span></h3>
                 <p>Override default model.</p>
+
+                <div class="warning-box">
+                    <strong>⚠️ Bedrock Model IDs:</strong> AWS Bedrock requires <strong>inference profile IDs</strong>, not direct model IDs.
+                    <br><br>
+                    <strong>Correct:</strong> <code>us.anthropic.claude-haiku-4-5-20251001-v1:0</code>
+                    <br>
+                    <strong>Wrong:</strong> <code>anthropic.claude-haiku-4-5-20251001-v1:0</code> (missing region prefix)
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Inference Profile ID (us-east-1)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Claude Haiku 4.5</td>
+                            <td><code>us.anthropic.claude-haiku-4-5-20251001-v1:0</code></td>
+                        </tr>
+                        <tr>
+                            <td>Claude Sonnet 4.5</td>
+                            <td><code>us.anthropic.claude-sonnet-4-5-20250929-v1:0</code></td>
+                        </tr>
+                        <tr>
+                            <td>Claude Opus 4.5</td>
+                            <td><code>us.anthropic.claude-opus-4-5-20251101-v1:0</code></td>
+                        </tr>
+                    </tbody>
+                </table>
 
                 <h3 id="llm-maxTokens">llm.maxTokens</h3>
                 <p>Max response tokens. Default: 1000.</p>
