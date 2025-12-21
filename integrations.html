@@ -466,8 +466,8 @@ const enriched = await response.json();
     "output": {
       "email": "contact@acme.example",
       "phone": "+1 555 0100",
-      "leadScore": 85,
-      "icpScore": 38,
+      "leadScore": "Good",
+      "icpScore": "Fair",
       "summary": "...",
       "techStack": ["React", "Node.js"],
       "enrichedAt": "2025-12-21T10:00:00.000Z"
@@ -481,8 +481,8 @@ const enriched = await response.json();
                 <tr><th>Field</th><th>Source</th></tr>
                 <tr><td>email</td><td>Website / Hunter</td></tr>
                 <tr><td>phone</td><td>Maps / Website</td></tr>
-                <tr><td>leadScore</td><td>AI (0-100)</td></tr>
-                <tr><td>icpScore</td><td>AI (0-40)</td></tr>
+                <tr><td>leadScore</td><td>AI (Excellent/Good/Fair/Poor/Bad)</td></tr>
+                <tr><td>icpScore</td><td>AI (Excellent/Good/Fair/Poor/Bad)</td></tr>
                 <tr><td>linkedinUrl</td><td>Hunter</td></tr>
                 <tr><td>techStack</td><td>Website</td></tr>
                 <tr><td>summary</td><td>AI</td></tr>
