@@ -3,207 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Airtable Lead Enricher - Documentation</title>
+    <title>Airtable Lead Enricher</title>
     <link rel="icon" type="image/png" href="https://images.apifyusercontent.com/hIWSIagcj8949hoLcWRj_q-7YXhT9xpVuYWR4RP93uU/rs:fill:250:250/cb:1/aHR0cHM6Ly9hcGlmeS1pbWFnZS11cGxvYWRzLXByb2QuczMudXMtZWFzdC0xLmFtYXpvbmF3cy5jb20vOHp1MThIQW4xN1Q4NXpGeFUtYWN0b3ItY1ZEcEF0dHBoY3BETTR2RngtMnpveEVnMEhlRi1haXJ0YWJsZS1sZWFkLWVucmljaGVyLXRyYW5zcGFyZW50LnBuZw.webp">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-        }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem 0; text-align: center; }
+        header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        header p { font-size: 1.2rem; opacity: 0.9; }
 
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-        }
+        .button-group { display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+        .btn-with-logo { display: inline-flex; align-items: center; gap: 0.5rem; background: white; color: #333; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .btn-with-logo:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+        .btn-logo { width: 24px; height: 24px; object-fit: contain; }
 
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .card { background: white; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card h2 { color: #667eea; margin-bottom: 1rem; font-size: 1.8rem; }
 
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
+        .docs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
+        .doc-link { background: white; border-radius: 8px; padding: 2rem; text-decoration: none; color: inherit; transition: transform 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .doc-link:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .doc-link h3 { color: #667eea; margin: 0 0 1rem 0; }
+        .doc-link p { color: #666; }
 
-        .button-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-top: 1.5rem;
-        }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        pre { background: #2d2d2d; color: #f8f8f2; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+        pre code { background: transparent; color: inherit; padding: 0; }
 
-        .btn-with-logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: white;
-            color: #333;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f7fafc; font-weight: 600; color: #667eea; }
 
-        .btn-with-logo:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-        }
-
-        .btn-logo {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .card h2 {
-            color: #667eea;
-            margin-bottom: 1rem;
-            font-size: 1.8rem;
-        }
-
-        .card h3 {
-            color: #764ba2;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .docs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .doc-link {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .doc-link:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .doc-link h3 {
-            color: #667eea;
-            margin: 0 0 1rem 0;
-        }
-
-        .doc-link p {
-            color: #666;
-        }
-
-        code {
-            background: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
-
-        pre {
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 1rem;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-
-        pre code {
-            background: transparent;
-            color: inherit;
-            padding: 0;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            text-decoration: none;
-            margin-right: 1rem;
-            margin-top: 0.5rem;
-            transition: background 0.2s;
-        }
-
-        .btn:hover {
-            background: #764ba2;
-        }
-
-        .btn-secondary {
-            background: #48bb78;
-        }
-
-        .btn-secondary:hover {
-            background: #38a169;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-        }
-
-        th, td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        th {
-            background: #f7fafc;
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-        }
+        footer { text-align: center; padding: 2rem; color: #666; }
     </style>
 </head>
 <body>
     <header>
         <h1>Airtable Lead Enricher</h1>
-        <p>Automatically enrich your Airtable CRM leads with contact info, company data, and AI-powered lead scoring</p>
-        <p style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 4px; display: inline-block; margin-top: 0.5rem;">
-            <strong>🎯 Official Extension:</strong> DataHQ-owned Apify actor and Airtable extension
-        </p>
+        <p>Fill missing lead data. Email, phone, AI scoring. Works with Airtable or standalone.</p>
         <div class="button-group">
             <a href="https://apify.com/datahq/airtable-lead-enricher" class="btn-with-logo">
                 <img src="https://apify.com/favicon.ico" alt="Apify" class="btn-logo">
@@ -211,7 +50,10 @@
             </a>
             <a href="extension.html" class="btn-with-logo">
                 <img src="https://airtable.com/images/favicon/baymax/favicon-32x32.png" alt="Airtable" class="btn-logo">
-                Try Airtable Extension
+                Airtable Extension
+            </a>
+            <a href="integrations.html" class="btn-with-logo">
+                🔌 API Integrations
             </a>
         </div>
     </header>
@@ -219,30 +61,26 @@
     <div class="container">
         <!-- Video Demo -->
         <div class="card">
-            <h2 style="margin-bottom: 15px;">🎥 See It in Action</h2>
+            <h2>🎥 Demo</h2>
             <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 <iframe
                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
                     src="https://www.youtube.com/embed/AEdyRe7t7Po"
-                    title="Airtable Lead Enricher Extension Demo"
+                    title="Airtable Lead Enricher Demo"
                     frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen>
                 </iframe>
             </div>
-            <p style="text-align: center; margin-top: 10px; color: #666; font-size: 0.9em;">
-                Watch the complete workflow: API setup, field mapping, and live enrichment
-            </p>
         </div>
 
         <div class="card">
             <h2>🚀 Quick Start</h2>
-            <p><strong>Get enriching in 3 minutes:</strong></p>
             <ol style="margin-left: 1.5rem; margin-top: 1rem;">
                 <li>Get Airtable token at <a href="https://airtable.com/create/tokens">airtable.com/create/tokens</a></li>
                 <li>Get Base ID from URL: <code>https://airtable.com/appXXXXXX/...</code></li>
-                <li>Get Table ID: Click <code>...</code> on table → "Copy table ID"</li>
-                <li>Run with minimal config:</li>
+                <li>Get Table ID: Click <code>...</code> on table → Copy table ID</li>
+                <li>Run:</li>
             </ol>
             <pre><code>{
   "airtable": {
@@ -250,8 +88,7 @@
     "baseId": "appXXXXXXXXXXXXXX",
     "tableId": "tblXXXXXXXXXXXXXX",
     "inputFields": {
-      "companyName": "Company Name",
-      "website": "Website"
+      "companyName": "Company Name"
     }
   }
 }</code></pre>
@@ -262,124 +99,80 @@
             <div class="docs-grid">
                 <a href="extension.html" class="doc-link">
                     <h3>📱 Extension Guide</h3>
-                    <p>Complete Airtable extension setup with screenshots</p>
+                    <p>Airtable extension setup</p>
                 </a>
                 <a href="configuration.html" class="doc-link">
-                    <h3>⚙️ Configuration Guide</h3>
-                    <p>Complete reference for all configuration options</p>
+                    <h3>⚙️ Configuration</h3>
+                    <p>All configuration options</p>
                 </a>
                 <a href="integrations.html" class="doc-link">
                     <h3>🔌 API Integrations</h3>
-                    <p>Use without Airtable via API mode (Lambda, Airflow, etc.)</p>
+                    <p>Lambda, Airflow, Glue, GCP, ECS, Docker, CRM systems</p>
                 </a>
             </div>
         </div>
 
         <div class="card">
-            <h2>✨ Key Features</h2>
+            <h2>🗂️ Field Mapping</h2>
+            <p>Map your Airtable columns to internal fields.</p>
+
+            <h3 style="margin-top: 1.5rem; color: #764ba2; font-size: 1.2rem;">Input (What to Read)</h3>
+            <pre><code>{
+  "inputFields": {
+    "companyName": "Company Name",  // REQUIRED
+    "website": "Website",           // REQUIRED
+    "location": "City"              // Optional
+  }
+}</code></pre>
+
+            <h3 style="margin-top: 1.5rem; color: #764ba2; font-size: 1.2rem;">Output (What to Write)</h3>
+            <pre><code>{
+  "outputFields": {
+    "email": "Contact Email",
+    "phone": "Phone",
+    "leadScore": "Lead Score",
+    "summary": "AI Summary"
+  }
+}</code></pre>
+            <p style="margin-top: 1rem;"><strong>Available outputs:</strong> email, phone, address, rating, reviewCount, description, techStack, industry, linkedinUrl, leadScore, icpScore, summary, and more. <a href="configuration.html#airtable-outputFields">See all fields →</a></p>
+        </div>
+
+        <div class="card">
+            <h2>✨ Features</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Contact Discovery</strong></td>
-                        <td>Email, phone from website + Google Maps</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Verified Emails</strong></td>
-                        <td>Hunter.io integration (BYOK)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Social Profiles</strong></td>
-                        <td>LinkedIn, Facebook, Twitter (via Hunter.io)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>AI Lead Scoring</strong></td>
-                        <td>0-100 score with ICP matching</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Batch Processing</strong></td>
-                        <td>Up to 100 leads per run</td>
-                    </tr>
-                </tbody>
+                <tr><th>Feature</th><th>Description</th></tr>
+                <tr><td><strong>Contact Info</strong></td><td>Email, phone from website + Google Maps</td></tr>
+                <tr><td><strong>Verified Emails</strong></td><td>Hunter.io (bring your own key)</td></tr>
+                <tr><td><strong>Social Links</strong></td><td>LinkedIn, Facebook, Twitter</td></tr>
+                <tr><td><strong>AI Scoring</strong></td><td>0-100 lead score + ICP match</td></tr>
+                <tr><td><strong>Batch Mode</strong></td><td>1000 companies per run (API mode)</td></tr>
             </table>
         </div>
 
         <div class="card">
             <h2>💰 Pricing</h2>
-            <p><strong style="font-size: 1.5rem; color: #667eea;">$0.03 per lead enriched</strong></p>
+            <p><strong style="font-size: 1.5rem; color: #667eea;">$0.03 per lead</strong></p>
             <table style="margin-top: 1rem;">
-                <thead>
-                    <tr>
-                        <th>Leads</th>
-                        <th>Cost</th>
-                        <th>vs. Clearbit</th>
-                        <th>vs. Apollo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>100</td>
-                        <td>$3.00</td>
-                        <td>$36 (12x cheaper)</td>
-                        <td>$15 (5x cheaper)</td>
-                    </tr>
-                    <tr>
-                        <td>1,000</td>
-                        <td>$30.00</td>
-                        <td>$360 (12x cheaper)</td>
-                        <td>$150 (5x cheaper)</td>
-                    </tr>
-                </tbody>
+                <tr><th>Leads</th><th>Cost</th><th>vs Clearbit</th><th>vs Apollo</th></tr>
+                <tr><td>100</td><td>$3</td><td>$36 (12x)</td><td>$15 (5x)</td></tr>
+                <tr><td>1,000</td><td>$30</td><td>$360 (12x)</td><td>$150 (5x)</td></tr>
             </table>
         </div>
 
         <div class="card">
             <h2>📊 Data Sources</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Source</th>
-                        <th>Fields Provided</th>
-                        <th>API Key?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Website</strong></td>
-                        <td>email, phone, description, techStack, industry, foundingYear, employeeCount, companyStage</td>
-                        <td>❌ No</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Google Maps</strong></td>
-                        <td>phone, address, rating, reviewCount, category</td>
-                        <td>❌ No</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Hunter.io</strong></td>
-                        <td>email (verified), LinkedIn, Facebook, Twitter</td>
-                        <td>✅ Yes (BYOK)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>AI/LLM</strong></td>
-                        <td>leadScore, icpScore, summary, targetCustomers, valueProposition, keyProducts, outreachAngles</td>
-                        <td>✅ Yes (BYOK)</td>
-                    </tr>
-                </tbody>
+                <tr><th>Source</th><th>Data</th><th>API Key?</th></tr>
+                <tr><td><strong>Website</strong></td><td>Email, phone, tech stack, industry</td><td>❌ No</td></tr>
+                <tr><td><strong>Google Maps</strong></td><td>Phone, address, rating, reviews</td><td>❌ No</td></tr>
+                <tr><td><strong>Hunter.io</strong></td><td>Verified email, LinkedIn, Facebook, Twitter</td><td>✅ Yes</td></tr>
+                <tr><td><strong>AI/LLM</strong></td><td>Lead score, ICP score, summary</td><td>✅ Yes</td></tr>
             </table>
         </div>
     </div>
 
     <footer>
-        <p>Built with ❤️ for sales teams who need clean, enriched lead data</p>
-        <p style="margin-top: 0.5rem;">
-            <a href="https://apify.com/datahq/airtable-lead-enricher/issues/open">Report Issue</a> ·
-            <a href="https://apify.com/datahq/airtable-lead-enricher">Actor Page</a>
-        </p>
+        <p><a href="https://apify.com/datahq/airtable-lead-enricher/issues/open">Report Issue</a> · <a href="https://apify.com/datahq/airtable-lead-enricher">Apify Actor</a></p>
     </footer>
 </body>
 </html>
