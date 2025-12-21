@@ -293,6 +293,7 @@
                 <ul class="toc">
                     <li><a href="#overview">API Mode Overview</a></li>
                     <li><a href="#self-hosted">Self-Hosted Deployment</a></li>
+                    <li><a href="#configuration">Configuration Options</a></li>
                     <li><a href="#python">Python Example</a></li>
                     <li><a href="#nodejs">Node.js Example</a></li>
                     <li><a href="#bedrock">AWS Bedrock Example</a></li>
@@ -433,6 +434,290 @@
                     <li>Provide a detailed deployment plan and timeline</li>
                     <li>Answer any technical questions</li>
                 </ul>
+
+                <h2 id="configuration">Configuration Options</h2>
+                <p>The API accepts a JSON payload with the following structure. All enrichment, LLM, and scoring options are optional and can be customized per your requirements.</p>
+
+                <h3>Core Parameters</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>mode</code></td>
+                            <td>string</td>
+                            <td>Yes</td>
+                            <td>Must be <code>"api"</code> for API mode</td>
+                        </tr>
+                        <tr>
+                            <td><code>companies</code></td>
+                            <td>array</td>
+                            <td>Yes</td>
+                            <td>Array of company objects (max 100). Each object requires <code>companyName</code>, optional <code>website</code> and <code>location</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>webhookUrl</code></td>
+                            <td>string</td>
+                            <td>No</td>
+                            <td>POST results to this URL when enrichment completes</td>
+                        </tr>
+                        <tr>
+                            <td><code>enrichment</code></td>
+                            <td>object</td>
+                            <td>No</td>
+                            <td>Enrichment configuration (sources, concurrency, timeouts)</td>
+                        </tr>
+                        <tr>
+                            <td><code>scoring</code></td>
+                            <td>object</td>
+                            <td>No</td>
+                            <td>Lead scoring configuration with ICP criteria</td>
+                        </tr>
+                        <tr>
+                            <td><code>llm</code></td>
+                            <td>object</td>
+                            <td>No</td>
+                            <td>AI/LLM provider configuration for enriched insights</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Enrichment Configuration</h3>
+                <p>Control which data sources to use and how enrichment is performed:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>sources</code></td>
+                            <td>array</td>
+                            <td><code>["google_maps", "website"]</code></td>
+                            <td>Data sources to use: <code>"google_maps"</code>, <code>"website"</code>, <code>"hunter"</code>, <code>"linkedin"</code>, <code>"facebook"</code>, <code>"twitter"</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>concurrency</code></td>
+                            <td>number</td>
+                            <td><code>10</code></td>
+                            <td>Max parallel enrichments (1-10)</td>
+                        </tr>
+                        <tr>
+                            <td><code>timeout</code></td>
+                            <td>number</td>
+                            <td><code>60</code></td>
+                            <td>Per-company timeout in seconds</td>
+                        </tr>
+                        <tr>
+                            <td><code>hunter</code></td>
+                            <td>object</td>
+                            <td><code>null</code></td>
+                            <td>Hunter.io config: <code>{"enabled": true, "apiKey": "YOUR_KEY"}</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>googleMaps</code></td>
+                            <td>object</td>
+                            <td><code>{"enabled": true}</code></td>
+                            <td>Google Maps config: <code>{"enabled": true, "includeReviews": false}</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>website</code></td>
+                            <td>object</td>
+                            <td><code>{"enabled": true}</code></td>
+                            <td>Website scraping config: <code>{"enabled": true, "crawlDepth": 1, "timeout": 15}</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>LLM Configuration</h3>
+                <p>Enable AI-powered enrichment for ICP scoring, summaries, and insights:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>enabled</code></td>
+                            <td>boolean</td>
+                            <td><code>false</code></td>
+                            <td>Enable AI-powered enrichment</td>
+                        </tr>
+                        <tr>
+                            <td><code>provider</code></td>
+                            <td>string</td>
+                            <td>-</td>
+                            <td>LLM provider: <code>"anthropic"</code>, <code>"openai"</code>, or <code>"bedrock"</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>apiKey</code></td>
+                            <td>string</td>
+                            <td>-</td>
+                            <td>API key for the provider (or Bedrock API key for new auth method)</td>
+                        </tr>
+                        <tr>
+                            <td><code>model</code></td>
+                            <td>string</td>
+                            <td>Provider default</td>
+                            <td>Model ID. Defaults: <code>"claude-3-5-haiku-20241022"</code> (Anthropic), <code>"gpt-4o-mini"</code> (OpenAI), <code>"us.anthropic.claude-haiku-4-5-20251001-v1:0"</code> (Bedrock)</td>
+                        </tr>
+                        <tr>
+                            <td><code>temperature</code></td>
+                            <td>number</td>
+                            <td><code>0.3</code></td>
+                            <td>Model temperature (0-1). Lower = more focused</td>
+                        </tr>
+                        <tr>
+                            <td><code>maxTokens</code></td>
+                            <td>number</td>
+                            <td><code>1000</code></td>
+                            <td>Maximum tokens per response</td>
+                        </tr>
+                        <tr>
+                            <td><code>region</code></td>
+                            <td>string</td>
+                            <td><code>"us-east-1"</code></td>
+                            <td><strong>Bedrock only:</strong> AWS region</td>
+                        </tr>
+                        <tr>
+                            <td><code>awsAccessKeyId</code></td>
+                            <td>string</td>
+                            <td>-</td>
+                            <td><strong>Bedrock only:</strong> AWS IAM Access Key (legacy auth method)</td>
+                        </tr>
+                        <tr>
+                            <td><code>awsSecretAccessKey</code></td>
+                            <td>string</td>
+                            <td>-</td>
+                            <td><strong>Bedrock only:</strong> AWS IAM Secret Key (legacy auth method)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>🆕 Bedrock Authentication:</strong> AWS Bedrock supports two authentication methods:
+                    <ul style="margin-top: 10px; margin-bottom: 0;">
+                        <li><strong>API Key (Recommended):</strong> Use <code>apiKey</code> with Bedrock API key</li>
+                        <li><strong>IAM Credentials (Legacy):</strong> Use <code>awsAccessKeyId</code> + <code>awsSecretAccessKey</code></li>
+                    </ul>
+                </div>
+
+                <h3>Scoring Configuration</h3>
+                <p>Configure lead scoring with custom ICP criteria and weights:</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>enabled</code></td>
+                            <td>boolean</td>
+                            <td><code>false</code></td>
+                            <td>Enable lead scoring (requires LLM enabled)</td>
+                        </tr>
+                        <tr>
+                            <td><code>icpCriteria</code></td>
+                            <td>string</td>
+                            <td>-</td>
+                            <td>Your Ideal Customer Profile criteria (detailed text describing your target companies)</td>
+                        </tr>
+                        <tr>
+                            <td><code>weights</code></td>
+                            <td>object</td>
+                            <td>See below</td>
+                            <td>Scoring weights for different signals</td>
+                        </tr>
+                        <tr>
+                            <td><code>minimumConfidence</code></td>
+                            <td>number</td>
+                            <td><code>0.3</code></td>
+                            <td>Minimum data confidence threshold (0-1)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Default Scoring Weights</h4>
+                <pre><code class="language-json">{
+  "hasEmail": 20,      // 20 points if email found
+  "hasPhone": 15,      // 15 points if phone found
+  "socialPresence": 15, // 15 points for social profiles
+  "reviewScore": 10,   // Up to 10 points based on ratings
+  "icpMatch": 40       // Up to 40 points from AI ICP analysis
+}</code></pre>
+
+                <h3>Complete Configuration Example</h3>
+                <pre><code class="language-json">{
+  "mode": "api",
+  "companies": [
+    {
+      "companyName": "Acme Corp",
+      "website": "https://www.acmecorp.example",
+      "location": "San Francisco, CA"
+    }
+  ],
+  "webhookUrl": "https://your-system.example/webhook",
+  "enrichment": {
+    "sources": ["google_maps", "website", "hunter"],
+    "concurrency": 10,
+    "timeout": 60,
+    "hunter": {
+      "enabled": true,
+      "apiKey": "YOUR_HUNTER_KEY"
+    },
+    "googleMaps": {
+      "enabled": true,
+      "includeReviews": false
+    },
+    "website": {
+      "enabled": true,
+      "crawlDepth": 1,
+      "timeout": 15
+    }
+  },
+  "llm": {
+    "enabled": true,
+    "provider": "bedrock",
+    "apiKey": "YOUR_BEDROCK_API_KEY",
+    "region": "us-east-1",
+    "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+    "temperature": 0.3,
+    "maxTokens": 1000
+  },
+  "scoring": {
+    "enabled": true,
+    "icpCriteria": "B2B SaaS companies with 50-500 employees, Series A+ funded, selling to enterprise customers, located in North America or Western Europe",
+    "weights": {
+      "hasEmail": 20,
+      "hasPhone": 15,
+      "socialPresence": 15,
+      "reviewScore": 10,
+      "icpMatch": 40
+    },
+    "minimumConfidence": 0.3
+  }
+}</code></pre>
 
                 <h2 id="python">Python Example</h2>
                 <p>Enrich leads using Python with both asynchronous and synchronous approaches:</p>
@@ -620,29 +905,54 @@ for company in results:
                 </table>
 
                 <h2 id="output-schema">Output Schema</h2>
-                <p>Each enriched lead returns the following JSON structure:</p>
+                <p>The API returns an array of enrichment results with metadata. Here's the complete response structure:</p>
 
-                <pre><code class="language-json">{
-  "companyName": "Acme Corp",
-  "website": "https://acme.com",
-  "location": "San Francisco, CA",
-  "email": "contact@acme.com",
-  "phone": "+1 555 0100",
-  "address": "123 Main St, San Francisco, CA",
-  "rating": 4.5,
-  "reviewCount": 127,
-  "linkedinUrl": "https://linkedin.com/company/acme",
-  "facebookUrl": "https://facebook.com/acme",
-  "twitterHandle": "@acme",
-  "industry": "Technology",
-  "leadScore": 85,
-  "icpScore": 36,
-  "icpReasoning": "Strong tech stack alignment...",
-  "summary": "Acme Corp is an enterprise...",
-  "dataConfidence": 0.87,
-  "enrichedAt": "2025-12-19T14:30:00Z",
-  "enrichmentSources": ["google_maps", "website", "hunter"]
-}</code></pre>
+                <h3>Response Format</h3>
+                <pre><code class="language-json">[
+  {
+    "type": "RUN_STATS",
+    "timestamp": "2025-12-21T10:44:04.480Z",
+    "mode": "api",
+    "stats": {
+      "companiesProcessed": 3,
+      "enrichmentSuccessful": 3,
+      "enrichmentFailed": 0,
+      "sources": ["google_maps", "website", "hunter"],
+      "llmEnabled": true
+    }
+  },
+  {
+    "type": "ENRICHED_COMPANY",
+    "input": {
+      "companyName": "Acme Corp",
+      "website": "https://www.acmecorp.example",
+      "location": "San Francisco, CA"
+    },
+    "output": {
+      "email": "contact@acmecorp.example",
+      "phone": "+1-555-0123",
+      "linkedinUrl": "https://www.linkedin.com/company/acmecorp",
+      "facebookUrl": "https://www.facebook.com/acmecorp",
+      "twitterHandle": "@acmecorp",
+      "dataConfidence": 0.85,
+      "industry": "Enterprise Software",
+      "description": "Acme Corp is a leading enterprise software provider specializing in cloud-based solutions for modern businesses.",
+      "techStack": ["React", "Node.js", "PostgreSQL", "AWS"],
+      "enrichedAt": "2025-12-21T10:43:57.293Z",
+      "enrichmentSources": ["website", "hunter"],
+      "processingTime": 1231,
+      "leadScore": 88,
+      "icpScore": 38,
+      "icpReasoning": "Acme Corp is an exceptional ICP match as an enterprise software company with proven Series B+ funding, strong technology stack alignment, and demonstrated need for scalable cloud infrastructure. Their multi-region deployment requirements and compliance needs align perfectly with organizations seeking robust, enterprise-grade solutions.",
+      "summary": "Acme Corp is a rapidly growing enterprise software platform serving Fortune 500 customers across multiple industries. The company has secured significant venture funding and operates a sophisticated cloud infrastructure supporting millions of daily transactions. Their technology-forward approach and expansion into new markets demonstrate strong alignment with solutions requiring scalable, compliant infrastructure."
+    },
+    "success": true
+  }
+]</code></pre>
+
+                <div class="info-box" style="margin-top: 20px;">
+                    <strong>💡 Response Structure:</strong> The API returns both run statistics and individual enriched company records. Each company includes comprehensive contact data, business intelligence, and AI-generated insights (ICP reasoning, summary) tailored to your specific criteria.
+                </div>
 
                 <h2 id="webhook">Webhook Integration</h2>
                 <p>Receive enrichment results via webhook for event-driven architectures:</p>
